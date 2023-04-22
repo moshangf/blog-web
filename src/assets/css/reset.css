@@ -1,0 +1,31 @@
+/**
+全局样式初始化
+ */
+
+/* 把所有标签的内外边距清零 */
+* {
+    margin: 0;
+    padding: 0
+}
+
+
+img {
+    /* border 0 照顾低版本浏览器 如果 图片外面包含了链接会有边框的问题 */
+    border: 0;
+    /* 取消图片底侧有空白缝隙的问题 */
+    vertical-align: middle
+}
+
+a {
+    color: #060224;
+    text-decoration: none
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Lato, Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+
+
+
+
