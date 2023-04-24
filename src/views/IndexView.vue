@@ -1,41 +1,41 @@
 <template>
   <div class="index_view">
     <!--  页头  -->
-    <WebHeader/>
+    <WebIndexHeader v-if="isIndex"/>
+    <WebOtherHeader v-else/>
 
     <!--  内容  -->
-    <main class="web_main">
-      main
-      <div class="web_main_inner">
-        inner
-      </div>
-    </main>
+    <WebMain/>
 
     <!--  页脚  -->
-    <footer class="web_footer">footer</footer>
+    <WebFooter/>
   </div>
 </template>
 
 <script setup>
-import WebHeader from '../components/WebHeader'</script>
+import WebIndexHeader from '../components/WebIndexHeader';
+import WebOtherHeader from '../components/WebOtherHeader'
+import WebMain from "../components/WebMain";
+import WebFooter from "../components/WebFooter";</script>
+
+<script>
+import {useRouter} from "vue-router";
+
+export default {
+  computed: {
+    isIndex() {
+      let router = useRouter().currentRoute.value.fullPath;
+      return this.$route.path === "/";
+    }
+  }
+}
+</script>
 
 
 <style lang="scss">
 
 .index_view {
   background-color: #f0eeee;
-
-  .web_main {
-    display: flex;
-    justify-content: center;
-
-    .web_main_inner {
-      background-color: white;
-      min-height: 1000px;
-      width: 1200px;
-      margin: 40px 20px;
-    }
-  }
 }
 
 
