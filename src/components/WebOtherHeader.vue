@@ -16,9 +16,12 @@ html {
 }
 
 .web_other_header {
-  //background-image: url("../../src/assets/img/index.png");
-  height: 50vh;
+  background-image: url("../../src/assets/img/archive.jpg");
+  position: relative;
+  height: 400px;
   width: 100%;
+  background-position: center center;
   background-size: cover;
+  transition: all 0.5s;
 }
 </style>

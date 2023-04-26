@@ -1,5 +1,8 @@
 <template>
   <div class="index_view">
+    <!--  背景  -->
+    <div class="web_bg"/>
+
     <!--  页头  -->
     <WebIndexHeader v-if="isIndex"/>
     <WebOtherHeader v-else/>
@@ -34,9 +37,16 @@ export default {
 
 <style lang="scss">
 
-.index_view {
-  background-color: #f0eeee;
+.web_bg {
+  background-image: url("../../src/assets/img/background.png");
+  position: fixed;
+  z-index: -999;
+  width: 100%;
+  height: 100%;
+  background-attachment: local;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
-
 
 </style>
