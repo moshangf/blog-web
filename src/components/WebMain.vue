@@ -1,30 +1,25 @@
 <template>
   <!--  内容  -->
   <main class="web_main">
-    main
-    <div class="web_main_inner">
-      <router-view/>
-    </div>
+    <!--  正文  -->
+    <MainArchive/>
+
+    <!--  侧边信息  -->
+    <MainAside/>
   </main>
 </template>
 
-<script>
+<script setup>
+import MainArchive from "./main/MainArchive";
+import MainAside from "./main/MainAside";</script>
 
-export default {
-  name: "WebMain"
-}
-</script>
-
-<style lang="scss">
+<style lang="scss" scoped>
 .web_main {
   display: flex;
-  justify-content: center;
-
-  .web_main_inner {
-    background-color: white;
-    min-height: 1000px;
-    width: 1200px;
-    margin: 40px 20px;
-  }
+  flex: 1 auto;
+  margin: 0 auto;
+  padding: 40px 15px;
+  max-width: 1200px;
+  width: 100%;
 }
 </style>
