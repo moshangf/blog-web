@@ -5,21 +5,57 @@
       <svg class="icon" aria-hidden="true">
         <use xlink:href="#icon-chaxunlishi"></use>
       </svg>
-
       <span class="title">最近文章</span>
     </div>
 
+
     <div class="aside_list">
       <div class="aside_list_item">
-        文章1
+        <div class="thumbnail">
+          <router-link to="/tags">
+            <el-image :src="require('@/assets/img/avatar.jpg')" fit="cover"/>
+          </router-link>
+        </div>
+
+        <div class="content">
+          <router-link to="/tags">
+            <span class="content_span">redis学习</span>
+          </router-link>
+
+          <time datetime="2022-12-22T02:26:19" title="发表于2022-12-22 02:26:19">2022-12-22</time>
+        </div>
       </div>
 
       <div class="aside_list_item">
-        文章2
+        <div class="thumbnail">
+          <router-link to="/tags">
+            <el-image :src="require('@/assets/img/avatar.jpg')" fit="cover"/>
+          </router-link>
+        </div>
+
+        <div class="content">
+          <router-link to="/tags">
+            <span class="content_span">redis学习</span>
+          </router-link>
+
+          <time datetime="2022-12-22T02:26:19" title="发表于2022-12-22 02:26:19">2022-12-22</time>
+        </div>
       </div>
 
       <div class="aside_list_item">
-        文章3
+        <div class="thumbnail">
+          <router-link to="/tags">
+            <el-image :src="require('@/assets/img/avatar.jpg')" fit="cover"/>
+          </router-link>
+        </div>
+
+        <div class="content">
+          <router-link to="/tags">
+            <span class="content_span">redis学习</span>
+          </router-link>
+
+          <time datetime="2022-12-22T02:26:19" title="发表于2022-12-22 02:26:19">2022-12-22</time>
+        </div>
       </div>
     </div>
 
@@ -35,7 +71,7 @@ export default {
 <style scoped lang="scss">
 .item_headline {
   font-size: 1.2em;
-  padding: 0 0 6px;
+  padding-bottom: 10px;
 
   .title {
     margin-left: 10px;
@@ -48,6 +84,27 @@ export default {
   .aside_list_item {
     align-items: center;
     padding: 6px 0;
+    display: flex;
+
+    .thumbnail {
+      width: 4.2em;
+      height: 4.2em;
+    }
+
+    .content {
+      padding-left: 10px;
+
+      .content_span {
+        font-size: 1em;
+        line-height: 2;
+      }
+
+      time {
+        display: block;
+        font-size: 0.8em;
+        color: #7f838b;
+      }
+    }
   }
 
   .aside_list_item:first-child {
