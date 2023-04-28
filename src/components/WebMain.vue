@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import MainArchive from "./main/MainArchive";
+import MainArchive from "./main/MainContent";
 import MainAside from "./main/MainAside";</script>
 
 <style lang="scss" scoped>

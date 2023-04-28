@@ -8,35 +8,29 @@
 </template>
 
 <script>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import 'jinrishici'
 
 export default {
   name: "HeaderInfo",
   setup: function () {
     // 实现文字逐字出现
-    const text = ref('玉惨花愁出凤城，莲花楼下柳青青');
+    const text = ref(null);
     const displayText = ref('');
-    // onMounted(() => {
-    //   axios.get('/api').then(response => {
-    //     text.value = response.data.data;
-    //   });
-    //
-    //   let index = 0;
-    //   setInterval(() => {
-    //     if (index < text.value.length) {
-    //       displayText.value += text.value.charAt(index);
-    //       index++;
-    //     }
-    //   }, 300);
-    // });
-    let index = 0;
+    onMounted(() => {
+      const jinrishici = require('jinrishici');
+      jinrishici.load(result => {
+        text.value = result.data.content
+      });
 
-    setInterval(() => {
-      if (index < text.value.length) {
-        displayText.value += text.value.charAt(index);
-        index++;
-      }
-    }, 300);
+      let index = 0;
+      setInterval(() => {
+        if (index < text.value.length) {
+          displayText.value += text.value.charAt(index);
+          index++;
+        }
+      }, 300);
+    });
 
     return {
       displayText,
@@ -54,6 +48,7 @@ export default {
 
   span.title {
     font-size: 1.72em;
+    color: white;
   }
 }
 </style>

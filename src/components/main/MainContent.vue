@@ -1,20 +1,16 @@
 <template>
   <!-- 正文 -->
-  <div class="archive">
+  <div class="content">
     <router-view/>
   </div>
 </template>
 
 <script>
-export default {
-  name: "MainArchive"
-}
+export default {}
 </script>
 
 <style scoped>
-.archive {
-  background: rgba(255, 255, 255, 0.8);
-  padding: 50px 40px;
+.content {
   transition: all 0.3s;
   width: 74%;
   border-radius: 8px;

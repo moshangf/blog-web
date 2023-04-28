@@ -10,18 +10,23 @@ const routes = [
         meta: {title: '山鬼说'},
         children: [
             {
-                path: '/archives',
-                name: 'archives',
-                component: () => import('../views/archive/Archive'),
-                meta: {title: '时间轴'}
+                path: '',
+                name: 'articleList',
+                component: () => import('../views/article/ArticleList'),
+                meta: {title: '主页'}
             },
             {
                 path: '/articles',
                 name: 'articles',
                 component: () => import('../views/article/Article'),
-                meta: {title: '文章'}
+                meta: {title: '主页'}
             },
-
+            {
+                path: '/archives',
+                name: 'archives',
+                component: () => import('../views/archive/Archive'),
+                meta: {title: '时间轴'}
+            },
             {
                 path: '/tags',
                 name: 'tags',
@@ -48,7 +53,6 @@ const routes = [
             },
         ]
     },
-
 ]
 
 const router = createRouter({
