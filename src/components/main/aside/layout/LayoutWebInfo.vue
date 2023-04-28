@@ -54,6 +54,11 @@ export default {
 
   .item_name {
     flex: 1;
+    line-height: 2;
+  }
+
+  .item_count {
+    line-height: 2;
   }
 }
 

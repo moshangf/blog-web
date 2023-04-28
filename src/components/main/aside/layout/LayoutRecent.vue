@@ -120,4 +120,9 @@ export default {
   }
 }
 
+
+.el-image {
+  display: unset;
+}
+
 </style>

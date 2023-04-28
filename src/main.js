@@ -14,13 +14,9 @@ import 'element-plus/theme-chalk/dark/css-vars.css'
 // 阿里图标样式
 import './assets/js/iconfont'
 import './assets/css/iconfont.css'
-// api
-import api from "./api";
-
 
 const app = createApp(App)
 
-app.config.globalProperties.$api = api;
 app.use(ElementPlus);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component);

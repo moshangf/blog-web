@@ -12,6 +12,9 @@
 
     <!--  页脚  -->
     <WebFooter/>
+
+    <!--  右侧悬浮按钮  -->
+    <div class="right_side"></div>
   </div>
 </template>
 
