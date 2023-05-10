@@ -127,13 +127,14 @@ export default {
 nav {
   background-color: transparent;
   height: 60px;
-  box-shadow: 1px 1px 5px #0003;
+  //box-shadow: 1px 1px 5px #0003;
   display: flex;
   align-items: center; /* 垂直居中 */
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
+  z-index: 9999;
 }
 
 .hidden {

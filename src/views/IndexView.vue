@@ -5,24 +5,26 @@
 
     <!--  页头  -->
     <WebIndexHeader v-if="isIndex"/>
-    <WebOtherHeader v-else/>
+    <WebOtherHeader v-else :propData="article"/>
 
     <!--  内容  -->
     <WebMain/>
 
     <!--  页脚  -->
     <WebFooter/>
-
-    <!--  右侧悬浮按钮  -->
-    <div class="right_side"></div>
   </div>
 </template>
 
 <script setup>
-import WebIndexHeader from '../components/WebIndexHeader';
-import WebOtherHeader from '../components/WebOtherHeader'
 import WebMain from "../components/WebMain";
-import WebFooter from "../components/WebFooter";</script>
+import WebFooter from "../components/WebFooter";
+import {provide, ref} from "vue";
+import WebIndexHeader from "../components/WebIndexHeader";
+import WebOtherHeader from "../components/WebOtherHeader";
+
+let article = ref('')
+provide('article', article) //接收子组件参数
+</script>
 
 <script>
 import {useRouter} from "vue-router";

@@ -9,7 +9,7 @@
 
       <div class="info">
         <div class="title">
-          <router-link to="/articles">{{ item.title }}</router-link>
+          <el-space class="article_title" @click="toArticle(item.id)">{{ item.title }}</el-space>
         </div>
 
 
@@ -46,23 +46,24 @@
 import {onMounted, reactive, ref} from "vue";
 import api from "../../api";
 import Pagination from "../../utils/Pagination";
+import {useRouter} from "vue-router";
 
 const articleList = reactive({});
 const total = ref(0);
 const pageNum = ref(1);
 const pageSize = ref(10);
+const router = useRouter();
 
 onMounted(() => {
   let param = {pageNum: pageNum.value, pageSize: pageSize.value,}
   api.getArticleList(param).then(res => {
-    console.log(res.data)
     articleList.value = res.data.data.pagingList;
     total.value = res.data.data.count;
   })
 })
 
 /**
- * 分页函数
+ * 分页查询
  * @param val 分页条件
  */
 const pageChange = (val) => {
@@ -71,10 +72,17 @@ const pageChange = (val) => {
 
   let param = {pageNum: pageNum.value, pageSize: pageSize.value}
   api.getArticleList(param).then(res => {
-    console.log(res.data)
     articleList.value = res.data.data.pagingList;
     total.value = res.data.data.count;
   })
+}
+
+
+/**
+ * 跳转文章详情页面
+ */
+const toArticle = (val) => {
+  router.push({name: 'articleInfo', params: {id: val}})
 }
 
 </script>
@@ -107,6 +115,14 @@ const pageChange = (val) => {
     .title {
       font-size: 1.4em;
       line-height: 1.4;
+
+      .article_title {
+        cursor: pointer;
+      }
+
+      .article_title:hover {
+        color: #3399ff;
+      }
     }
 
     .subhead {

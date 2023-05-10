@@ -17,10 +17,11 @@ export default {
     // 实现文字逐字出现
     const text = ref(null);
     const displayText = ref('');
+
     onMounted(() => {
       const jinrishici = require('jinrishici');
       jinrishici.load(result => {
-        text.value = result.data.content
+        text.value = result.data.content + "—— 《" + result.data.origin.title + "》"
       });
 
       let index = 0;
