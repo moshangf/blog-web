@@ -16,10 +16,10 @@ const routes = [
                 meta: {title: '主页'}
             },
             {
-                path: '/articles',
-                name: 'articles',
+                path: '/articles/:id',
+                name: 'articleInfo',
                 component: () => import('../views/article/Article'),
-                meta: {title: '主页'}
+                exact: true
             },
             {
                 path: '/archives',

@@ -2,15 +2,18 @@
   <!--  内容  -->
   <main class="web_main">
     <!--  正文  -->
-    <MainArchive/>
+    <MainContent/>
 
     <!--  侧边信息  -->
     <MainAside/>
+
+    <!--  回到顶部  -->
+    <el-backtop :right="50" :bottom="50"/>
   </main>
 </template>
 
 <script setup>
-import MainArchive from "./main/MainContent";
+import MainContent from "./main/MainContent";
 import MainAside from "./main/MainAside";</script>
 
 <style lang="scss" scoped>
@@ -21,5 +24,24 @@ import MainAside from "./main/MainAside";</script>
   padding: 40px 15px;
   max-width: 1200px;
   width: 100%;
+  animation: bottom-top 1s;
+
+
+  @keyframes bottom-top {
+    0% {
+      margin-top: 50px;
+      opacity: 0;
+      -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+      filter: alpha(opacity=0);
+    }
+    100% {
+      margin-top: 0;
+      opacity: 1;
+      -ms-filter: none;
+      filter: none;
+    }
+  }
 }
+
+
 </style>

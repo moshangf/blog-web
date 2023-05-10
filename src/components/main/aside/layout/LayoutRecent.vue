@@ -10,62 +10,48 @@
 
 
     <div class="aside_list">
-      <div class="aside_list_item">
+      <div class="aside_list_item" v-for="item in articleList.value">
         <div class="thumbnail">
-          <router-link to="/tags">
-            <el-image :src="require('@/assets/img/avatar.jpg')" fit="cover"/>
-          </router-link>
+          <el-image :src="item.cover" fit="cover" @click="toArticle(item.id)"/>
         </div>
 
         <div class="content">
-          <router-link to="/tags">
-            <span class="content_span">redis学习</span>
+          <router-link :to="'/articles/'+item.id">
+            <span class="content_span" @click="toArticle(item.id)">{{ item.title }}</span>
           </router-link>
+          <time>发表于：{{ item.createTime }}</time>
 
-          <time datetime="2022-12-22T02:26:19" title="发表于2022-12-22 02:26:19">2022-12-22</time>
-        </div>
-      </div>
-
-      <div class="aside_list_item">
-        <div class="thumbnail">
-          <router-link to="/tags">
-            <el-image :src="require('@/assets/img/avatar.jpg')" fit="cover"/>
-          </router-link>
-        </div>
-
-        <div class="content">
-          <router-link to="/tags">
-            <span class="content_span">redis学习</span>
-          </router-link>
-
-          <time datetime="2022-12-22T02:26:19" title="发表于2022-12-22 02:26:19">2022-12-22</time>
-        </div>
-      </div>
-
-      <div class="aside_list_item">
-        <div class="thumbnail">
-          <router-link to="/tags">
-            <el-image :src="require('@/assets/img/avatar.jpg')" fit="cover"/>
-          </router-link>
-        </div>
-
-        <div class="content">
-          <router-link to="/tags">
-            <span class="content_span">redis学习</span>
-          </router-link>
-
-          <time datetime="2022-12-22T02:26:19" title="发表于2022-12-22 02:26:19">2022-12-22</time>
         </div>
       </div>
     </div>
 
+
   </div>
 </template>
 
-<script>
-export default {
-  name: "LayoutRecent"
+<script setup>
+
+import {onMounted, reactive} from "vue";
+import api from "../../../../api";
+import {useRouter} from "vue-router";
+
+let articleList = reactive({});
+let router = useRouter();
+
+onMounted(() => {
+  let parm = {pageNum: 1, pageSize: 3}
+  api.getArticleList(parm).then(res => {
+    articleList.value = res.data.data.pagingList;
+  })
+})
+
+/**
+ * 跳转文章详情页面
+ */
+const toArticle = (val) => {
+  router.push({name: 'articleInfo', params: {id: val}})
 }
+
 </script>
 
 <style scoped lang="scss">
@@ -89,14 +75,23 @@ export default {
     .thumbnail {
       width: 4.2em;
       height: 4.2em;
+      cursor: pointer;
     }
 
     .content {
       padding-left: 10px;
 
       .content_span {
-        font-size: 1em;
+        font-size: 0.9em;
         line-height: 2;
+        cursor: pointer;
+      }
+
+      .content_span:hover {
+        font-size: 0.9em;
+        line-height: 2;
+        cursor: pointer;
+        color: #3399ff;
       }
 
       time {

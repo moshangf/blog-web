@@ -31,5 +31,29 @@ html {
   height: 100vh;
   width: 100%;
   background-size: cover;
+  animation: slide-down 1s;
+
+  @keyframes slide-down {
+    0% {
+      opacity: 0;
+      -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+      filter: alpha(opacity=0);
+      -webkit-transform: translateY(-50px);
+      -moz-transform: translateY(-50px);
+      -o-transform: translateY(-50px);
+      -ms-transform: translateY(-50px);
+      transform: translateY(-50px);
+    }
+    100% {
+      opacity: 1;
+      -ms-filter: none;
+      filter: none;
+      -webkit-transform: translateY(0);
+      -moz-transform: translateY(0);
+      -o-transform: translateY(0);
+      -ms-transform: translateY(0);
+      transform: translateY(0);
+    }
+  }
 }
 </style>
