@@ -6,7 +6,7 @@
         <el-avatar :src="require('@/assets/img/avatar.jpg')" :size="120"/>
       </div>
       <div class="name">山鬼</div>
-      <div class="description">一只萌新</div>
+      <div class="description">路漫漫其修远兮</div>
     </div>
 
     <!--  博客统计  -->
