@@ -3,10 +3,13 @@
     <!--  背景  -->
     <div class="web_bg"/>
 
-    <!--  页头  -->
-    <WebIndexHeader v-if="isIndex"/>
-    <WebOtherHeader v-else :propData="article"/>
+    <!--  顶部导航栏  -->
+    <HeaderNav/>
 
+    <!--  页头  -->
+    <WebHeader v-if="isIndex"/>
+    <WebBanner v-else :propData="article"/>
+    
     <!--  内容  -->
     <WebMain/>
 
@@ -19,20 +22,18 @@
 import WebMain from "../components/WebMain";
 import WebFooter from "../components/WebFooter";
 import {provide, ref} from "vue";
-import WebIndexHeader from "../components/WebIndexHeader";
-import WebOtherHeader from "../components/WebOtherHeader";
+import WebHeader from "../components/WebHeader";
+import HeaderNav from "../components/header/HeaderNav";
+import WebBanner from "../components/WebBanner";
 
 let article = ref('')
 provide('article', article) //接收子组件参数
 </script>
 
 <script>
-import {useRouter} from "vue-router";
-
 export default {
   computed: {
     isIndex() {
-      let router = useRouter().currentRoute.value.fullPath;
       return this.$route.path === "/";
     }
   }

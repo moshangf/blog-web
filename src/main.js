@@ -14,6 +14,10 @@ import 'element-plus/theme-chalk/dark/css-vars.css'
 // 阿里图标样式
 import './assets/js/iconfont'
 import './assets/css/iconfont.css'
+// 引入undraw-ui
+import UndrawUi from 'undraw-ui'
+import 'undraw-ui/dist/style.css'
+
 
 const app = createApp(App)
 
@@ -21,6 +25,8 @@ app.use(ElementPlus);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component);
 }
+app.use(UndrawUi)
+
 
 app.use(store).use(router).mount('#app')
 

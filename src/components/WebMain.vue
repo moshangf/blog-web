@@ -1,10 +1,9 @@
 <template>
-  <!--  内容  -->
   <main class="web_main">
     <!--  正文  -->
     <MainContent/>
 
-    <!--  侧边信息  -->
+    <!--  侧边栏  -->
     <MainAside/>
 
     <!--  回到顶部  -->

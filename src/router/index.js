@@ -7,7 +7,6 @@ const routes = [
         path: '/',
         name: 'index',
         component: () => import('../views/IndexView.vue'),
-        meta: {title: '山鬼说'},
         children: [
             {
                 path: '',

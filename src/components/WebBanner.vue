@@ -1,9 +1,8 @@
 <template>
   <header id="web_other_header" :style="{backgroundImage: `url(${propData.cover})`}">
-    <!--  导航菜单  -->
-    <HeaderNav/>
 
     <div class="page_title">
+      <h1 class="title">{{ routeTitle }}</h1>
       <h1 class="title">{{ propData.title }}</h1>
       <h1 class="title">{{ propData.intro }}</h1>
     </div>
@@ -13,19 +12,23 @@
 
 
 <script setup>
-import HeaderNav from "./header/HeaderNav";
+import {useRouter} from "vue-router";
+import {ref, watchEffect} from "vue";
 
 const props = defineProps({
-  propData: Object
+  propData: String
 })
 
+const router = useRouter();
+const routeTitle = ref(router.currentRoute.value.meta.title)
+
+watchEffect(() => {
+  // 在路由变化时触发组件重新渲染
+  routeTitle.value = router.currentRoute.value.meta.title;
+})
 </script>
 
 <style lang="scss" scoped>
-html {
-  scroll-behavior: smooth;
-}
-
 #web_other_header {
   background-image: url("../../src/assets/img/archive.jpg");
   background-position: center center;
@@ -66,12 +69,9 @@ html {
 
 
   .page_title {
-
     .title {
       color: white;
     }
-
-
   }
 }
 </style>

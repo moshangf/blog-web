@@ -39,8 +39,8 @@ let articleList = reactive({});
 let router = useRouter();
 
 onMounted(() => {
-  let parm = {pageNum: 1, pageSize: 3}
-  api.getArticleList(parm).then(res => {
+  let param = {pageNum: 1, pageSize: 3}
+  api.getArticleList(param).then(res => {
     articleList.value = res.data.data.pagingList;
   })
 })
