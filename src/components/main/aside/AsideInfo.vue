@@ -5,23 +5,23 @@
       <div class="avatar">
         <el-avatar :src="require('@/assets/img/avatar.jpg')" :size="120"/>
       </div>
-      <div class="name">山鬼</div>
+      <div class="name">隰 风</div>
       <div class="description">路漫漫其修远兮</div>
     </div>
 
     <!--  博客统计  -->
     <div class="statistics">
-      <router-link to="/articles">
+      <router-link to="/articles" class="stat-item">
         <div class="title">文章</div>
         <div class="count">3</div>
       </router-link>
 
-      <router-link to="/tags">
+      <router-link to="/tags" class="stat-item">
         <div class="title">标签</div>
         <div class="count">2</div>
       </router-link>
 
-      <router-link to="/categories">
+      <router-link to="/categories" class="stat-item">
         <div class="title">分类</div>
         <div class="count">1</div>
       </router-link>
@@ -82,6 +82,10 @@ export default {
     flex-direction: row;
     justify-content: space-evenly;
     text-align: center;
+
+    .stat-item {
+      padding: 10px 20px;
+    }
 
     .title {
       font-size: 20px;

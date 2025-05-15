@@ -50,7 +50,7 @@
 <script setup>
 import {onMounted, reactive, ref} from "vue";
 import api from "../../api";
-import Pagination from "../../utils/Pagination";
+import Pagination from "@/utils/Pagination/index.vue";
 import {useRouter} from "vue-router";
 
 const articleList = reactive({});
@@ -95,7 +95,8 @@ const toArticle = (val) => {
   background: rgba(255, 255, 255, 0.8);
   padding: 50px;
   border-radius: 12px;
-
+  display: flex;
+  
   .count {
     margin-bottom: 30px;
   }
@@ -155,6 +156,9 @@ const toArticle = (val) => {
 }
 
 .page {
-  flex: 1;
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+  margin-top: auto;
 }
 </style>

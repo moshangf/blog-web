@@ -2,9 +2,9 @@
   <div class="article_list">
 
 
-    <div class="list_item" v-for="(item,index) in articleList.value" :key="index">
+    <div class="list_item" v-for="(item, index) in articleList.value" :key="index">
       <div class="cover">
-        <el-image class="cover_image" :src="item.cover" fit="cover"/>
+        <el-image class="cover_image" :src="item.cover" fit="cover" />
       </div>
 
       <div class="info">
@@ -22,31 +22,27 @@
           <svg class="icon" aria-hidden="true">
             <use xlink:href="#icon-pinglun"></use>
           </svg>
-          <span class="comment_count"> 0条评论</span>
+          <span class="comment_count"> {{ item.commentsNum }}条评论</span>
         </div>
 
 
         <div class="intro">{{ item.intro }}</div>
       </div>
     </div>
+  </div>
 
-    <!--  分页  -->
-    <div class="page">
-      <Pagination
-          :total="total"
-          :page_index="pageNum"
-          @pageChange="pageChange"
-      />
-    </div>
+  <!--  分页  -->
+  <div class="page">
+    <Pagination :total="total" :page_index="pageNum" @pageChange="pageChange" />
   </div>
 </template>
 
 
 <script setup>
-import {onMounted, reactive, ref} from "vue";
+import { onMounted, reactive, ref } from "vue";
 import api from "../../api";
-import Pagination from "../../utils/Pagination";
-import {useRouter} from "vue-router";
+import Pagination from "@/utils/Pagination/index.vue";
+import { useRouter } from "vue-router";
 
 const articleList = reactive({});
 const total = ref(0);
@@ -55,7 +51,7 @@ const pageSize = ref(10);
 const router = useRouter();
 
 onMounted(() => {
-  let param = {pageNum: pageNum.value, pageSize: pageSize.value,}
+  let param = { pageNum: pageNum.value, pageSize: pageSize.value, }
   api.getArticleList(param).then(res => {
     articleList.value = res.data.data.pagingList;
     total.value = res.data.data.count;
@@ -70,7 +66,7 @@ const pageChange = (val) => {
   pageSize.value = val.pageSize
   pageNum.value = val.pageNum
 
-  let param = {pageNum: pageNum.value, pageSize: pageSize.value}
+  let param = { pageNum: pageNum.value, pageSize: pageSize.value }
   api.getArticleList(param).then(res => {
     articleList.value = res.data.data.pagingList;
     total.value = res.data.data.count;
@@ -82,14 +78,13 @@ const pageChange = (val) => {
  * 跳转文章详情页面
  */
 const toArticle = (val) => {
-  router.push({name: 'articleInfo', params: {id: val}})
+  router.push({ name: 'articleInfo', params: { id: val } })
 }
 
 </script>
 
 
 <style scoped lang="scss">
-
 .list_item {
   background: rgba(255, 255, 255, 0.8);
   display: flex;
@@ -163,8 +158,9 @@ const toArticle = (val) => {
 }
 
 .page {
-  flex: 1;
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+  margin-top: auto;
 }
-
 </style>
-

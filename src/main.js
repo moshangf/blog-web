@@ -1,32 +1,31 @@
-import {createApp} from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
+import { createApp } from "vue";
+import App from "./App.vue";
+import router from "./router";
+import store from "./store";
 // 全局样式
-import './assets/css/reset.css'
+import "./assets/css/reset.css";
 // ElementPlus
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
+import ElementPlus from "element-plus";
+import "element-plus/dist/index.css";
+import zhCn from "element-plus/es/locale/lang/zh-cn";
 // ElementPlus图标
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 // ElementPlus暗夜样式
-import 'element-plus/theme-chalk/dark/css-vars.css'
+import "element-plus/theme-chalk/dark/css-vars.css";
 // 阿里图标样式
-import './assets/js/iconfont'
-import './assets/css/iconfont.css'
-// 引入undraw-ui
-import UndrawUi from 'undraw-ui'
-import 'undraw-ui/dist/style.css'
+import "./assets/js/iconfont";
+import "./assets/css/iconfont.css";
 
+const app = createApp(App);
 
-const app = createApp(App)
-
-app.use(ElementPlus);
+// ElP配置中文
+app.use(ElementPlus, {
+  locale: zhCn,
+  size: "small",
+  zIndex: 3000,
+  darkMode: true,
+});
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-    app.component(key, component);
+  app.component(key, component);
 }
-app.use(UndrawUi)
-
-
-app.use(store).use(router).mount('#app')
-
+app.use(store).use(router).mount("#app");

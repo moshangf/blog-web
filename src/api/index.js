@@ -1,53 +1,108 @@
 import request from "../utils/request";
 import path from "./path";
 
-
 const api = {
-    /**
-     * 查询文章列表
-     * @param param 查询条件
-     * @returns {Promise<AxiosResponse<any>>}
-     */
-    getArticleList(param) {
-        return request.get(path.baseUrl + path.articleList, {params: param});
-    },
+  /**
+   * 获取验证码
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  getCaptcha() {
+    return request.get(path.captcha);
+  },
 
-    /**
-     * 查询文章详情
-     * @param param 文章id
-     * @returns {Promise<AxiosResponse<any>>}
-     */
-    getArticleInfo(param) {
-        return request.get(path.baseUrl + path.articleInfo + param);
-    },
+  /**
+   * 用户登录
+   * @param data
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  login(data) {
+    return request.post(path.login, data);
+  },
 
-    /**
-     * 根据文章id查询评论
-     * @param param 文章id
-     * @returns {Promise<AxiosResponse<any>>}
-     */
-    getCommentListByArticleId(param) {
-        return request.get(path.baseUrl + path.commentList, {params: param});
-    },
+  /**
+   * 查询当前用户信息
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  getCurrentUser() {
+    return request.get(path.currentUser);
+  },
 
-    /**
-     * 添加评论
-     * @param param 评论参数
-     * @returns {Promise<AxiosResponse<any>>}
-     */
-    addComment(param) {
-        return request.post(path.baseUrl + path.commentAdd, param)
-    },
+  /**
+   * 搜索用户,用于@功能
+   * @param {*} keywords
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  searchUsers(keywords) {
+    return request.get(path.userSearch, {
+      params: { keywords },
+    });
+  },
 
-    /**
-     * 根据id删除评论
-     * @param param
-     * @returns {Promise<AxiosResponse<any>>}
-     */
-    deleteComment(param) {
-        return request.delete(path.baseUrl + path.commentDelete, {data: [param]});
-    }
-}
+  /**
+   * 查询文章列表
+   * @param param 查询条件
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  getArticleList(param) {
+    return request.get(path.articleList, { params: param });
+  },
 
+  /**
+   * 查询文章详情
+   * @param param 文章id
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  getArticleInfo(param) {
+    return request.get(path.articleInfo, { params: { id: param } });
+  },
+
+  /**
+   * 根据文章id查询评论
+   * @param param 评论查询参数
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  getCommentList(param) {
+    return request.get(path.commentList, { params: param });
+  },
+
+  /**
+   * 根据评论id查询回复列表
+   * @param parentId 评论id
+   * @param pageNum 当前页码
+   * @param pageSize 每页显示条数
+   * @param articleId 文章id
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  getReplyPage({parentId,pageNum,pageSize,articleId}) {
+    return request.get(path.replyPage, {params: { parentId, current: pageNum, size: pageSize, articleId }});
+  },
+
+  /**
+   * 添加评论
+   * @param param 评论参数
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  addComment(param) {
+    return request.post(path.commentAdd, param);
+  },
+
+  /**
+   * 根据id删除评论
+   * @param param
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  deleteComment(param) {
+    return request.delete(path.commentDelete, { data: [param] });
+  },
+
+  /**
+   * 点赞评论
+   * @param {*} 评论id
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  likeComment(commentId) {
+    return request.get(path.commentLike, { params: { commentId } });
+  }
+};
 
 export default api;

@@ -125,7 +125,7 @@ export default {
 <style lang="scss" scoped>
 
 nav {
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.8);
   height: 60px;
   //box-shadow: 1px 1px 5px #0003;
   display: flex;
@@ -142,7 +142,7 @@ nav {
 }
 
 span, i {
-  color: #EFEDEE;
+  color: #332b28;
 }
 
 .logo {
