@@ -1,15 +1,9 @@
 <!--全局分页组件-->
 <template>
   <div class="pagination">
-    <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="page.pageNum"
-        :page-size="page.pageSize"
-        :page-sizes="pageSizes"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+    <el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange"
+      :current-page="page.pageNum" :page-size="page.pageSize" :page-sizes="pageSizes"
+      layout="total, sizes, prev, pager, next, jumper" :total="total" :hide-on-single-page="false">
     </el-pagination>
   </div>
 </template>
@@ -51,10 +45,8 @@ export default {
 </script>
 
 <style scoped>
-.pagination {
-  padding: 24px 12px;
-  text-align: right;
+.pagenation {
+  padding: 20px 0;
+  text-align: center;
 }
-
 </style>
-

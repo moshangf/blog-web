@@ -10,7 +10,7 @@
 
 
     <div class="aside_list">
-      <div class="aside_list_item" v-for="item in articleList.value">
+      <div class="aside_list_item" v-for="item in articleList.value" :key="item.id">
         <div class="thumbnail">
           <el-image :src="item.cover" fit="cover" @click="toArticle(item.id)"/>
         </div>

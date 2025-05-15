@@ -8,7 +8,7 @@
 
     <!--  页头  -->
     <WebHeader v-if="isIndex"/>
-    <WebBanner v-else :propData="article"/>
+    <WebBanner v-else :propData="article || {}"/>
     
     <!--  内容  -->
     <WebMain/>
@@ -26,7 +26,7 @@ import WebHeader from "../components/WebHeader";
 import HeaderNav from "../components/header/HeaderNav";
 import WebBanner from "../components/WebBanner";
 
-let article = ref('')
+const article = ref({})  // 修改为对象的初始值
 provide('article', article) //接收子组件参数
 </script>
 
