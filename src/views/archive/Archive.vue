@@ -1,7 +1,11 @@
 <template>
   <div class="timeline">
     <div class="count">
-      <h2>文章总览 — {{ total }}</h2>
+      <h2>
+        <div class="vertical-text">
+          <span>文</span><span>章</span><span>总</span><span>览</span><span class="separator">—</span><span class="total">{{total}}</span>
+        </div>
+      </h2>
     </div>
 
     <el-timeline>
@@ -99,6 +103,26 @@ const toArticle = (val) => {
   
   .count {
     margin-bottom: 30px;
+    
+    h2 {
+      display: flex;
+      align-items: flex-start;
+      
+      .vertical-text {
+        writing-mode: vertical-lr;
+        span {
+          display: inline-block;
+          margin: 5px 0;
+        }
+        .total {
+          text-orientation: upright;
+        }
+      }
+      
+      .horizontal-text {
+        margin-left: 10px;
+      }
+    }
   }
 
   .time_class {
