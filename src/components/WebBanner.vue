@@ -1,3 +1,4 @@
+<!-- 顶部展示区 -->
 <template>
   <header id="web_other_header" :style="{ backgroundImage: `url(${propData?.cover || ''})` }">
     <div class="page_title">

@@ -16,13 +16,13 @@
 
 
 <script setup>
-import { inject, onMounted, reactive, ref, nextTick, onUnmounted } from "vue";
+import { inject, onMounted, reactive, ref, nextTick, onUnmounted, createApp, h } from "vue";
 import { useRouter } from "vue-router";
 import api from "../../api";
 import emoji from "../../assets/js/emoji.js";
 import { UToast } from "undraw-ui";
 import { useCopyCode } from '../../utils/useCopyCode.js'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElImageViewer } from 'element-plus'
 
 const { copyCode } = useCopyCode()
 
@@ -54,12 +54,18 @@ const query = reactive({
   articleId: articleId // 文章id
 })
 
-// 简化 processContent 方法
+// 添加预览相关的响应式变量
+const imageUrls = ref([])
+
+/**
+ * 展示文章正文内容
+ */
 const processContent = (content) => {
   if (!content) return '';
   const div = document.createElement('div');
   div.innerHTML = content;
 
+  // 处理标题
   const headings = div.querySelectorAll('h1, h2, h3, h4, h5, h6');
   const titleTemplate = (text) => `
     <span class="title-icon">
@@ -75,6 +81,32 @@ const processContent = (content) => {
   });
 
   return div.innerHTML;
+}
+
+/**
+ * 预览图片
+ */
+const previewImage = (index) => {
+  if (imageUrls.value.length > 0) {
+    // 创建容器并挂载
+    const container = document.createElement('div')
+    document.body.appendChild(container)
+
+    const instance = createApp({
+      render() {
+        return h(ElImageViewer, {
+          urlList: imageUrls.value,
+          initialIndex: index,
+          onClose: () => {
+            instance.unmount();
+            container.remove(); // 确保移除容器
+          },
+        })
+      }
+    })
+
+    instance.mount(container)
+  }
 }
 
 /**
@@ -100,7 +132,6 @@ const operate = async (type, comment, finish) => {
         break
     }
   } catch (error) {
-    console.error('操作失败:', error)
     UToast({ message: '操作失败!', type: 'error' })
   }
 }
@@ -134,7 +165,6 @@ const submit = async ({ content, parentId, finish }) => {
         UToast({ message: res.data.message, type: 'error' })
       }
     } catch (error) {
-      console.error('评论失败:', error)
       UToast({ message: error.message, type: 'error' })
     }
   }
@@ -174,7 +204,6 @@ const like = async (id, finish) => {
         UToast({ message: res.data.message, type: 'error' })
       }
     } catch (error) {
-      console.error('点赞操作失败:', error)
       UToast({ message: '点赞操作失败!', type: 'error' })
     } finally {
       // if (finish) finish()
@@ -213,7 +242,6 @@ const fetchUserInfo = async () => {
       // 用户未登录
     }
   } catch (error) {
-    console.error('获取用户信息失败:', error)
     ElMessage.error('获取用户信息失败')
   }
 }
@@ -237,7 +265,6 @@ const fetchComments = async () => {
       UToast({ message: '获取评论列表失败', type: 'error' })
     }
   } catch (error) {
-    console.error('获取评论列表失败:', error)
     UToast({ message: '获取评论列表失败', type: 'error' })
   }
 }
@@ -273,13 +300,26 @@ const fetchArticleInfo = async () => {
         id: res.data.data.id
       }
 
-      // 等待 DOM 更新完成后初始化目录
+      // 等待 DOM 更新完成后处理目录和图片
       nextTick(() => {
+        // 初始化目录
         window.dispatchEvent(new CustomEvent('article-content-updated'))
+        // 初始化图片预览
+        const articleContent = document.querySelector('.article-content')
+        if (articleContent) {
+          const images = articleContent.querySelectorAll('img')
+          imageUrls.value = Array.from(images).map(img => img.src)
+          
+          images.forEach((img, index) => {
+            img.style.cursor = 'zoom-in'
+            img.addEventListener('click', () => {
+              previewImage(index)
+            })
+          })
+        }
       })
     }
   } catch (error) {
-    console.error('获取文章详情失败:', error)
     ElMessage.error('获取文章详情失败')
   }
 }
@@ -297,7 +337,6 @@ const replyPage = async ({ parentId, pageNum, pageSize, finish }) => {
       UToast({ message: '获取回复列表失败', type: 'error' })
     }
   } catch (error) {
-    console.error('获取回复列表失败:', error)
     UToast({ message: '获取回复列表失败', type: 'error' })
     finish([]) // 出错时返回空数组
   }
@@ -327,20 +366,27 @@ const initCodeCopy = () => {
 }
 
 
-onMounted(() => {
-  // 并行执行所有请求
-  Promise.allSettled([
-    fetchUserInfo(),
-    fetchComments(),
-    fetchArticleInfo()
-  ]).finally(() => {
-    // 无论请求成功与否,都初始化代码块复制功能
+onMounted(async() => {
+  window.previewImage = previewImage;
+  try {
+    // 先获取文章详情
+    await fetchArticleInfo()
+    
+    // 再并行执行其他请求
+    await Promise.allSettled([
+      fetchUserInfo(),
+      fetchComments()
+    ])
+  } finally {
+    // 最后初始化代码块复制功能
     initCodeCopy()
-  })
+  }
 })
 
 onUnmounted(() => {
-
+  delete window.previewImage;
+  // 清理所有可能存在的预览容器
+  document.querySelectorAll('.el-image-viewer__wrapper').forEach(el => el.remove());
 })
 
 </script>
@@ -448,6 +494,12 @@ onUnmounted(() => {
     border-radius: 4px;
     display: block;
     margin: 1em auto;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.02);
+    }
   }
 
   code {
@@ -532,6 +584,20 @@ onUnmounted(() => {
     th {
       background-color: #f6f8fa;
     }
+  }
+}
+
+:deep(.el-image-viewer__wrapper) {
+  .el-image-viewer__btn {
+    color: #fff;
+    
+    i {
+      font-size: 24px;
+    }
+  }
+  
+  .el-image-viewer__actions {
+    opacity: 0.9;
   }
 }
 </style>
