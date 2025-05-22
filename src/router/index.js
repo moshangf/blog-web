@@ -27,7 +27,7 @@ const routes = [
                 meta: {title: '文章详情'}
             },
             {
-                path: '/archives',
+                path: '/archives/:year?/:month?',
                 name: 'archives',
                 component: () => import('../views/archive/Archive'),
                 meta: {title: '时间轴'}

@@ -23,6 +23,8 @@ const header = ref(null);
   height: 100vh;
   width: 100%;
   background-size: cover;
+  background-color: rgba(0, 0, 0, 0.2);  /* 添加半透明背景 */
+  background-blend-mode: overlay;  /* 设置背景混合模式 */
   animation: slide-down 1s;
 
   @keyframes slide-down {
