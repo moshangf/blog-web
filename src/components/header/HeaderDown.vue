@@ -16,7 +16,10 @@ export default {
 
   setup(props) {
     const scrollToContent = () => {
-      window.scrollTo(0, props.headerRef.offsetHeight);
+      window.scrollTo({
+        top: props.headerRef.offsetHeight,
+        behavior: 'smooth'
+      });
     };
 
     return {

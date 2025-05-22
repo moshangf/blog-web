@@ -64,12 +64,19 @@ const errors = reactive({
 
 // 监听显示登录弹窗的事件
 const handleShowQuickLogin = (event) => {
+    // 如果弹窗已经显示，不重复处理
+    if (showDialog.value) {
+        return
+    }
+    
     showDialog.value = true
     if (event.detail?.config) {
         pendingRequest = event.detail.config
     }
     // 显示弹窗时获取验证码
     getCaptcha()
+    // 启动定时器
+    startCaptchaTimer()
 }
 
 const validateForm = () => {
@@ -98,6 +105,17 @@ const validateForm = () => {
 
 const closeDialog = () => {
     showDialog.value = false
+    // 清除所有定时器
+    clearCaptchaTimer()
+    // 重置表单
+    form.username = ''
+    form.email = ''
+    form.captcha = ''
+    form.uuid = ''
+    // 清除错误提示
+    errors.username = ''
+    errors.email = ''
+    errors.captcha = ''
     emit('cancel')
 }
 
@@ -109,6 +127,11 @@ const getCaptcha = async () => {
         clearTimeout(captchaTimeout)
     }
 
+    // 如果弹窗没有显示，不获取验证码
+    if (!showDialog.value) {
+        return
+    }
+
     captchaTimeout = setTimeout(async () => {
         try {
             const res = await api.getCaptcha()
@@ -116,7 +139,6 @@ const getCaptcha = async () => {
                 const data = res.data.data
                 captchaImg.value = data.captcha
                 form.uuid = data.uuid
-                startCaptchaTimer()
             }
         } catch (error) {
             console.error('获取验证码失败:', error)
@@ -127,8 +149,14 @@ const getCaptcha = async () => {
 
 // 启动定时器
 const startCaptchaTimer = () => {
+    // 先清除可能存在的定时器
+    clearCaptchaTimer()
+    // 设置新的定时器
     captchaTimer = setInterval(() => {
-        getCaptcha()
+        // 只有在弹窗显示时才更新验证码
+        if (showDialog.value) {
+            getCaptcha()
+        }
     }, 1000 * 60 * 3) // 3分钟更新一次
 }
 
@@ -137,6 +165,10 @@ const clearCaptchaTimer = () => {
     if (captchaTimer) {
         clearInterval(captchaTimer)
         captchaTimer = null
+    }
+    if (captchaTimeout) {
+        clearTimeout(captchaTimeout)
+        captchaTimeout = null
     }
 }
 

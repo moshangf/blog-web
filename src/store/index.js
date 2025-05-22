@@ -1,8 +1,7 @@
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
 
-export default createStore({
-  state: {
+export default createStore({  state: {
     accessToken: null,
     refreshToken: null,
     userInfo: {
@@ -11,10 +10,26 @@ export default createStore({
       email: "",
       avatar: "",
     },
+    visitorId: null,
+    lastVisitDate: null,
+    authorInfo: {
+      lastUpdate: null, // 添加最后更新时间
+      avatar: "",
+      name: "",
+      description: "",
+      social: {
+        github: "",
+        gitee: "",
+        email: ""
+      }
+    },
   },
   getters: {
     isLoggedIn: (state) => !!state.accessToken,
     getUserInfo: (state) => state.userInfo,
+    getVisitorId: (state) => state.visitorId,
+    getLastVisitDate: (state) => state.lastVisitDate,
+    getAuthorInfo: (state) => state.authorInfo,
   },
   mutations: {
     setAccessToken(state, token) {
@@ -38,10 +53,23 @@ export default createStore({
         avatar: "",
       };
     },
+    setVisitorInfo(state, { visitorId, visitDate }) {
+      state.visitorId = visitorId;
+      state.lastVisitDate = visitDate;
+    },
+    setAuthorInfo(state, authorInfo) {
+      state.authorInfo.avatar = authorInfo.avatar;
+      state.authorInfo.name = authorInfo.name;
+      state.authorInfo.description = authorInfo.description;
+      state.authorInfo.social = authorInfo.social;
+    },
   },
   actions: {
     logout({ commit }) {
       commit("clearUserInfo");
+    },
+    updateVisitorInfo({ commit }, visitorInfo) {
+      commit("setVisitorInfo", visitorInfo);
     },
   },
   modules: {},

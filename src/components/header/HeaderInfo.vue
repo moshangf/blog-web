@@ -41,7 +41,7 @@ export default {
             clearInterval(timer);
           }
         }
-      }, 300);
+      }, 200);
     };
 
     onMounted(() => {

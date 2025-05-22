@@ -73,8 +73,10 @@ const api = {
    * @param articleId 文章id
    * @returns {Promise<AxiosResponse<any>>}
    */
-  getReplyPage({parentId,pageNum,pageSize,articleId}) {
-    return request.get(path.replyPage, {params: { parentId, current: pageNum, size: pageSize, articleId }});
+  getReplyPage({ parentId, pageNum, pageSize, articleId }) {
+    return request.get(path.replyPage, {
+      params: { parentId, current: pageNum, size: pageSize, articleId },
+    });
   },
 
   /**
@@ -102,7 +104,57 @@ const api = {
    */
   likeComment(commentId) {
     return request.get(path.commentLike, { params: { commentId } });
-  }
+  },
+
+  /**
+   * 记录访客信息
+   * @param {string} visitorId - 访客唯一标识
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  recordVisitor(visitorId) {
+    return request.post(path.recordVisitor, { visitorId });
+  },
+
+  /**
+   * 获取作者信息
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  getAuthorInfo() {
+    return request.get(path.authorInfo);
+  },
+
+  /**
+   * 获取网站公告
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  getNotice() {
+    return request.get(path.notice);
+  },
+
+  /**
+   * 获取文章列表
+   * @param params {pageNum, pageSize, year, month} 分页参数和筛选条件
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  getArticleList(params) {
+    return request.get(path.articleList, { params });
+  },
+
+  /**
+   * 获取归档数据
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  getArchives() {
+    return request.get(path.archive);
+  },
+
+  /**
+   * 获取网站统计信息
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  getWebsiteStats() {
+    return request.get(path.websiteStats);
+  },
 };
 
 export default api;

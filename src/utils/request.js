@@ -14,11 +14,11 @@ const instance = axios.create({
  */
 instance.interceptors.request.use(
   (config) => {
-    // 尝试从localStorage中获取token
+    // 从 Vuex store 中获取 token
     const accessToken = store.state.accessToken;
 
-    // 如果有token就添加到请求头中
-    if (accessToken) {
+    // 只有当 token 存在且有效时才添加到请求头
+    if (accessToken && accessToken !== 'null' && accessToken !== 'undefined') {
       config.headers.Authorization = accessToken;
     }
 
@@ -53,9 +53,10 @@ instance.interceptors.response.use(
 
     // 判断是否需要登录
     if ([40300, 40500].includes(response.data.code)) {
-      // 清除可能存在的无效token
+      // 清除 localStorage 和 Vuex store 中的 token
       localStorage.removeItem("accessToken");
-      
+      store.commit('clearUserInfo');  // 清除 Vuex store 中的用户信息
+
       // 创建一个自定义事件，触发快速登录弹窗
       window.dispatchEvent(new CustomEvent('show-quick-login', {
         detail: {

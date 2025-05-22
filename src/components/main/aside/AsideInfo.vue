@@ -3,14 +3,14 @@
     <!--  作者信息  -->
     <div class="canter">
       <div class="avatar">
-        <el-avatar :src="require('@/assets/img/avatar.jpg')" :size="120"/>
+        <el-avatar :src="authorInfo.avatar || require('@/assets/img/avatar.jpg')" :size="120" />
       </div>
-      <div class="name">隰 风</div>
-      <div class="description">路漫漫其修远兮</div>
+      <div class="name">{{ authorInfo.name }}</div>
+      <div class="description">{{ authorInfo.description }}</div>
     </div>
 
     <!--  博客统计  -->
-    <div class="statistics">
+    <!-- <div class="statistics">
       <router-link to="/articles" class="stat-item">
         <div class="title">文章</div>
         <div class="count">3</div>
@@ -25,23 +25,25 @@
         <div class="title">分类</div>
         <div class="count">1</div>
       </router-link>
-    </div>
+    </div> -->
+
+
 
     <!--  图标  -->
     <div class="icons">
-      <a class="social-icon" href="https://github.com/moshangf?tab=repositories">
+      <a class="social-icon" :href="authorInfo.social.github" target="_blank" v-if="authorInfo.social.github">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-github"></use>
         </svg>
       </a>
 
-      <a class="social-icon" href="https://gitee.com/moshangfeng3">
+      <a class="social-icon" :href="authorInfo.social.gitee" target="_blank" v-if="authorInfo.social.gitee">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-gitee"></use>
         </svg>
       </a>
 
-      <a class="social-icon" href="mailto:15531132417@163.com">
+      <a class="social-icon" :href="'mailto:' + authorInfo.social.email" v-if="authorInfo.social.email">
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-youxiang"></use>
         </svg>
@@ -51,14 +53,65 @@
 </template>
 
 <script>
+import { ref, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import api from '@/api'
+
 export default {
-  name: "Info"
+  name: "Info",
+  setup() {
+    const store = useStore()
+    const authorInfo = ref(store.state.authorInfo)
+
+    // 检查是否需要更新作者信息
+    const checkNeedUpdate = () => {
+      const lastUpdate = authorInfo.value.lastUpdate
+      if (!lastUpdate) return true
+      
+      // 设置更新间隔为5分钟
+      const UPDATE_INTERVAL = 5 * 60 * 1000
+      return Date.now() - lastUpdate > UPDATE_INTERVAL
+    }
+
+    /**
+     * 获取作者信息
+     * @description 通过API获取作者信息，并更新Vuex状态
+     */
+    const fetchAuthorInfo = async () => {
+      try {
+        const response = await api.getAuthorInfo()
+        if (response.data.code === 20000 && response.data.data) {
+          // 添加更新时间戳并持久化作者信息
+          const authorData = {
+            ...response.data.data,
+            lastUpdate: Date.now()
+          }
+          store.commit('setAuthorInfo', authorData)
+          authorInfo.value = store.state.authorInfo
+        }
+      } catch (error) {
+        console.error('获取作者信息失败:', error)
+      }
+    }
+
+    onMounted(() => {
+      // 如果没有作者信息或需要更新，则获取新数据
+      if (!authorInfo.value.name || checkNeedUpdate()) {
+        fetchAuthorInfo()
+      }
+    })
+
+    return {
+      authorInfo
+    }
+  }
 }
 </script>
 
 <style scoped lang="scss">
 .card {
   margin-top: 0;
+  padding: 20px 20px 20px 20px;
 
   // 作者信息
   .canter {
@@ -100,8 +153,10 @@ export default {
   // 图标
   .icons {
     display: flex;
-    padding: 0 50px;
+    margin-top: 20px;
+    padding: 10px 0px 0px 0px;
     text-align: center;
+    border-top: 2px dashed #9fd1e3;
 
     .social-icon {
       width: 33%;

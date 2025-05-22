@@ -34,6 +34,21 @@ const base = {
 
   // 点赞评论接口
   commentLike: baseUrl + "/comment/like",
+
+  // 访客记录接口
+  recordVisitor: baseUrl + "/visitor/record",
+
+  // 获取作者信息接口
+  authorInfo: baseUrl + "/author/info",
+
+  // 获取网站公告接口
+  notice: baseUrl + "/notice/info",
+
+  // 获取归档列表接口
+  archive: baseUrl + "/articles/archive",
+
+  // 获取网站统计信息
+  websiteStats: baseUrl + "/website/stats",
 };
 
 export default base;

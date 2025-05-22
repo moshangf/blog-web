@@ -1,6 +1,6 @@
 <template>
   <!--  顶部导航栏  -->
-  <nav :class="{'hidden':isHidden}">
+  <nav :class="{'hidden':isHidden, 'at-top': isTop}">
     <!--   页面log   -->
     <a href="/">
           <span class="logo">
@@ -98,11 +98,14 @@ export default {
       },
       lastScrollTop: 0, // 上次滚动的位置
       isHidden: false, // 是否隐藏导航栏
+      isTop: true, // 是否在顶部
     }
   },
 
   mounted() {
     window.addEventListener('scroll', this.handleScroll)
+    // 初始化检查是否在顶部
+    this.handleScroll()
   },
 
   beforeDestroy() {
@@ -116,6 +119,8 @@ export default {
       let delta = scrollTop - this.lastScrollTop; //滚动距离的差值
       this.isHidden = delta > 0;
       this.lastScrollTop = scrollTop; // 更新上一次滚动距离
+      // 更新是否在顶部的状态
+      this.isTop = scrollTop <= 0
     }
   },
 
@@ -126,8 +131,8 @@ export default {
 
 nav {
   background-color: rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
   height: 60px;
-  //box-shadow: 1px 1px 5px #0003;
   display: flex;
   align-items: center; /* 垂直居中 */
   position: fixed;
@@ -135,6 +140,20 @@ nav {
   left: 0;
   right: 0;
   z-index: 9999;
+
+  &.at-top {
+    background-color: transparent;
+
+    span, i {
+      color: #ffffff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .el-switch {
+      --el-switch-off-color: rgba(255, 255, 255, 0.3);
+      border-color: #ffffff;
+    }
+  }
 }
 
 .hidden {
@@ -143,6 +162,7 @@ nav {
 
 span, i {
   color: #332b28;
+  transition: color 0.3s ease;
 }
 
 .logo {

@@ -1,6 +1,6 @@
 <!-- 顶部展示区 -->
 <template>
-  <header id="web_other_header" :style="{ backgroundImage: `url(${propData?.cover || ''})` }">
+  <header id="web_other_header" :style="{ backgroundImage: `url(${currentCover})` }">
     <div class="page_title">
       <div class="article_title" v-if="isArticlePage">
         <h1>{{ propData?.title }}</h1>
@@ -15,7 +15,6 @@
   </header>
 </template>
 
-
 <script setup>
 import { useRouter } from "vue-router";
 import { ref, watchEffect } from "vue";
@@ -25,13 +24,21 @@ import dayjs from "dayjs";
 const props = defineProps({
   propData: {
     type: Object,
-    required: true,
+    required: false,
     default: () => ({
       cover: '',
       title: '',
       createTime: '',
       pageView: 0,
       likesCount: 0
+    })
+  },
+  bannerData: {
+    type: Object,
+    required: false,
+    default: () => ({
+      cover: '',
+      title: ''
     })
   }
 })
@@ -41,6 +48,22 @@ const routeTitle = ref(router.currentRoute.value.meta.title)
 const isArticlePage = computed(() => {
   console.log('meta名称:', routeTitle.value)
   return routeTitle.value === "文章详情"
+})
+
+const currentCover = ref('')
+
+// 监听路由和文章数据变化
+watchEffect(() => {
+  const path = router.currentRoute.value.path
+  const isArticle = router.currentRoute.value.meta.title === "文章详情"
+  
+  if (isArticle) {
+    // 是文章页面时，使用文章封面
+    currentCover.value = props.propData?.cover || ''
+  } else {
+    // 不是文章页面时，使用传入的banner背景
+    currentCover.value = props.bannerData?.cover || ''
+  }
 })
 
 watchEffect(() => {
@@ -106,7 +129,6 @@ watchEffect(() => {
 }
 
 #web_other_header {
-  background-image: url("../../src/assets/img/archive.jpg");
   background-position: center center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -144,8 +166,20 @@ watchEffect(() => {
     }
   }
 
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    // background: rgba(0, 0, 0, 0.1); // 添加一个半透明遮罩
+    z-index: 1;
+  }
 
   .page_title {
+    position: relative;
+    z-index: 2; // 确保标题在遮罩层上方
     .title {
       color: white;
     }
