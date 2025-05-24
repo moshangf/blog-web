@@ -61,11 +61,21 @@ export default {
       }
     },
 
+    /**
+     * 格式化字数
+     * @param count 字数
+     * @returns {string} 格式化后的字数
+     */
     formatWordCount(count) {
       if (!count) return '0';
       return count > 1000 ? (count / 1000).toFixed(1) + 'k' : count;
     },
 
+    /**
+     * 格式化最后更新时间
+     * @param time 最后更新时间
+     * @returns {string} 格式化后的时间
+     */
     formatLastUpdate(time) {
       if (!time) return '暂无更新';
       return formatDistanceToNow(new Date(time), { addSuffix: true, locale: zhCN });
