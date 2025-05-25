@@ -112,7 +112,7 @@ const api = {
    * @returns {Promise<AxiosResponse<any>>}
    */
   recordVisitor(visitorId) {
-    return request.post(path.recordVisitor, { visitorId });
+    return request.get(path.recordVisitor, { params: { visitorId } });
   },
 
   /**
