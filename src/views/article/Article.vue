@@ -5,11 +5,18 @@
     <div class="article-content" v-html="processContent(content)" />
 
     <!-- 割线 -->
-    <hr class="article_hr" />    <!-- 评论区 -->
-    <u-comment-scroll :disable="disable" @more="more">
-      <u-comment class="comment" :config="config" @submit="submit" @reply-page="replyPage" @before-data="beforeData"
-        @like="like" @operate="operate" relative-time upload />
+    <hr class="article_hr" />
+
+    <!-- 评论区 -->
+    <u-comment-scroll :disable="false" @more="more">
+      <u-comment ref="commentRef" class="comment" :config="config" @submit="submit" @reply-page="replyPage"
+        @before-data="beforeData" @like="like">
+        <template #operate="scope">
+          <Operate :comment="scope" @remove="remove" @report="report" />
+        </template>
+      </u-comment>
     </u-comment-scroll>
+
 
   </div>
 </template>
@@ -19,13 +26,15 @@
 import { inject, onMounted, reactive, ref, nextTick, onUnmounted, createApp, h } from "vue";
 import { useRouter } from "vue-router";
 import api from "../../api";
-import emoji from "../../assets/js/emoji.js";
+import emoji from "@/assets/js/emoji.js";
 import { UToast } from "undraw-ui";
 import { useCopyCode } from '../../utils/useCopyCode.js'
 import { ElMessage, ElImageViewer } from 'element-plus'
+import Operate from '../../utils/CommentOperate/CommentOperate.vue'
 
+const commentRef = ref()
 const { copyCode } = useCopyCode()
-
+const contentEmoji = emoji;
 const router = useRouter();
 const content = ref();
 const article = inject('article') //向父组件传递文章信息
@@ -40,16 +49,16 @@ const config = reactive({
     homeLink: '', // 用户主页链接
     likeIds: [] // 用户点赞列表
   },
-  emoji: emoji,
+  emoji: contentEmoji,
   comments: [], // 评论列表
-  replyShowSize: 5, // 回复列表显示条数
+  replyShowSize: 3, // 回复列表显示条数
   relativeTime: true,  // 开启人性化时间
   page: true, // 开启分页
 })
 
 const query = reactive({
   pageNum: 1, // 当前页数
-  pageSize: 3, // 页大小
+  pageSize: 5, // 页大小
   total: 0,   // 评论总数 
   articleId: articleId // 文章id
 })
@@ -110,29 +119,38 @@ const previewImage = (index) => {
 }
 
 /**
- *  工具栏操作
- * @param type 操作类型
+ * 删除评论
  * @param comment 评论
- * @param finish 回调函数
  */
-const operate = async (type, comment, finish) => {
+const remove = async (comment) => {
   try {
-    switch (type) {
-      case '删除':
-        const res = await api.deleteComment(comment.id)
-        if (res.data.code === 20000) {
-          UToast({ message: '删除成功!', type: 'success' })
-          finish()
-        } else {
-          UToast({ message: '删除失败!', type: 'error' })
-        }
-        break
-      case '举报':
-        UToast({ message: '举报成功!', type: 'success' })
-        break
+    const res = await api.deleteComment({ id: comment.id })
+    if (res.data.code === 20000) {
+      commentRef.value?.remove(comment)
+      UToast({ message: '删除成功!', type: 'success' })
+    } else {
+      UToast({ message: res.data.message || '删除失败', type: 'error' })
     }
   } catch (error) {
-    UToast({ message: '操作失败!', type: 'error' })
+    console.log("删除评论" + error)
+    UToast({ message: '删除失败' + error, type: 'error' })
+  }
+}
+
+/**
+ * 举报评论
+ * @param comment 评论
+ */
+const report = async (comment) => {
+  try {
+    const res = await api.reportComment(comment.id)
+    if (res.data.code === 20000) {
+      UToast({ type: 'success', message: '举报成功' })
+    } else {
+      UToast({ type: 'error', message: res.data.message || '举报失败' })
+    }
+  } catch (error) {
+    UToast({ type: 'error', message: '举报失败' })
   }
 }
 
@@ -159,8 +177,20 @@ const submit = async ({ content, parentId, finish }) => {
 
       const res = await api.addComment(param)
       if (res.data.code === 20000) {
-        finish(res.data.data)
-        UToast({ message: '评论成功!', type: 'success' })
+        // 根据审核状态处理评论显示
+        const commentData = res.data.data
+        if (commentData.auditStatus === 'PENDING') {
+          UToast({ message: '评论已提交，正在审核中!', type: 'warning' })
+        } else if (commentData.auditStatus === 'APPROVED') {
+          finish(commentData)
+          UToast({ message: '评论成功!', type: 'success' })
+        } else if (commentData.auditStatus === 'REJECTED') {
+          UToast({ message: '评论包含敏感内容，请修改后重试!', type: 'error' })
+          return
+        } else {
+          finish(commentData)
+          UToast({ message: '评论成功!', type: 'success' })
+        }
       } else {
         UToast({ message: res.data.message, type: 'error' })
       }
@@ -179,34 +209,39 @@ const submit = async ({ content, parentId, finish }) => {
 const like = async (id, finish) => {
   const likeAction = async () => {
     try {
+      // 确保id始终为数字类型
+      const numId = Number(id)
+      const comment = findComment(config.comments, numId)
+      const configUser = config.user
+
+      // 在发送请求前判断当前状态
+      const isCurrentlyLiked = configUser.likeIds.includes(numId)
+
       const res = await api.likeComment(id)
       if (res.data.code === 20000) {
-        // 确保id始终为数字类型
-        const numId = Number(id)
-        const comment = findComment(config.comments, numId)
-
-        const configUser = config.user
-        if (!configUser.likeIds.includes(numId)) {
+        if (isCurrentlyLiked) {
+          // 如果当前是已点赞状态，则执行取消点赞
+          const index = configUser.likeIds.indexOf(numId)
+          if (index > -1) {
+            configUser.likeIds.splice(index, 1)
+            if (comment) {
+              comment.likes = Math.max((comment.likes || 1) - 1, 0)
+            }
+          }
+          UToast({ message: '取消点赞成功!', type: 'info' })
+        } else {
+          // 如果当前是未点赞状态，则执行点赞
           configUser.likeIds.push(numId)
           if (comment) {
-            comment.likeNum = (comment.likeNum || 0) + 1
+            comment.likes = (comment.likes || 0) + 1
           }
           UToast({ message: '点赞成功!', type: 'success' })
-        } else {
-          const index = configUser.likeIds.indexOf(numId)
-          configUser.likeIds.splice(index, 1)
-          if (comment) {
-            comment.likeNum = Math.max((comment.likeNum || 0) - 1, 0)
-          }
-          UToast({ message: '取消点赞成功!', type: 'success' })
         }
       } else {
         UToast({ message: res.data.message, type: 'error' })
       }
     } catch (error) {
       UToast({ message: '点赞操作失败!', type: 'error' })
-    } finally {
-      // if (finish) finish()
     }
   }
 
@@ -216,8 +251,9 @@ const like = async (id, finish) => {
 const findComment = (comments, targetId) => {
   for (const comment of comments) {
     if (comment.id === targetId) return comment
-    if (comment.replies?.length) {
-      const found = findComment(comment.replies, targetId)
+    // 检查回复列表
+    if (comment.reply?.list?.length) {
+      const found = comment.reply.list.find(reply => reply.id === targetId)
       if (found) return found
     }
   }
@@ -245,11 +281,6 @@ const fetchUserInfo = async () => {
     ElMessage.error('获取用户信息失败')
   }
 }
-
-/**
- * 是否禁用滚动加载评论
- */
-const disable = ref(false)
 
 /**
  * 获取评论列表
@@ -309,7 +340,7 @@ const fetchArticleInfo = async () => {
         if (articleContent) {
           const images = articleContent.querySelectorAll('img')
           imageUrls.value = Array.from(images).map(img => img.src)
-          
+
           images.forEach((img, index) => {
             img.style.cursor = 'zoom-in'
             img.addEventListener('click', () => {
@@ -328,9 +359,10 @@ const fetchArticleInfo = async () => {
  * 获取回复列表
  * @param param0 
  */
-const replyPage = async ({ parentId, pageNum, pageSize, finish }) => {
+const replyPage = async ({ parentId, current, size, finish }) => {
+  console.log("获取评论回复" + parentId + current + size + articleId)
   try {
-    const res = await api.getReplyPage({ parentId, pageNum, pageSize, articleId: articleId })
+    const res = await api.getReplyPage({ parentId, current, size, articleId: articleId })
     if (res.data.code === 20000) {
       finish(res.data.data)
     } else {
@@ -344,7 +376,8 @@ const replyPage = async ({ parentId, pageNum, pageSize, finish }) => {
 
 // 加载前评论数据处理
 const beforeData = async () => {
-
+  // 自定义别名nickname转换username
+  // val.user.username = val.user.nickname
 }
 
 /**
@@ -366,12 +399,21 @@ const initCodeCopy = () => {
 }
 
 
-onMounted(async() => {
+onMounted(async () => {
   window.previewImage = previewImage;
+
+  // 测试 emoji 资源加载
+  console.log('Emoji 资源加载测试：', {
+    emojiList: emoji.emojiList,
+    faceList: emoji.faceList,
+    allEmoji: emoji.allEmoji,
+    contentEmoji
+  });
+
   try {
     // 先获取文章详情
     await fetchArticleInfo()
-    
+
     // 再并行执行其他请求
     await Promise.allSettled([
       fetchUserInfo(),
@@ -496,7 +538,7 @@ onUnmounted(() => {
     margin: 1em auto;
     cursor: pointer;
     transition: transform 0.3s ease;
-    
+
     &:hover {
       transform: scale(1.02);
     }
@@ -590,12 +632,12 @@ onUnmounted(() => {
 :deep(.el-image-viewer__wrapper) {
   .el-image-viewer__btn {
     color: #fff;
-    
+
     i {
       font-size: 24px;
     }
   }
-  
+
   .el-image-viewer__actions {
     opacity: 0.9;
   }
