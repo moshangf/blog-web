@@ -1,5 +1,7 @@
 // 后端服务器接口
 const baseUrl = "http://localhost:9090/web/public";
+// 公网域名
+// const baseUrl = "https://你的域名/web/public";
 
 const base = {
   // 登录接口
@@ -30,7 +32,10 @@ const base = {
   commentAdd: baseUrl + "/comment/add",
 
   // 删除文章评论接口
-  commentDelete: baseUrl + "/comment/deleteCheck",
+  commentDelete: baseUrl + "/comment/deleteMyComment",
+
+  // 举报评论接口
+  reportComment: baseUrl + "/comment/report",
 
   // 点赞评论接口
   commentLike: baseUrl + "/comment/like",
@@ -49,6 +54,9 @@ const base = {
 
   // 获取网站统计信息
   websiteStats: baseUrl + "/website/stats",
+
+  // 查询评论审核状态接口
+  commentAuditStatus: baseUrl + "/comment/auditStatus",
 };
 
 export default base;

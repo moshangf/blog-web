@@ -73,9 +73,9 @@ const api = {
    * @param articleId 文章id
    * @returns {Promise<AxiosResponse<any>>}
    */
-  getReplyPage({ parentId, pageNum, pageSize, articleId }) {
+  getReplyPage({ parentId, current, size, articleId }) {
     return request.get(path.replyPage, {
-      params: { parentId, current: pageNum, size: pageSize, articleId },
+      params: { parentId, pageNum: current, pageSize: size, articleId },
     });
   },
 
@@ -94,13 +94,22 @@ const api = {
    * @returns {Promise<AxiosResponse<any>>}
    */
   deleteComment(param) {
-    return request.delete(path.commentDelete, { data: [param] });
+    return request.delete(path.commentDelete, { params: param });
+  },
+
+  /**
+   * 根据id举报评论
+   * @param param
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  reportComment(param) {
+    return request.post(path.reportComment, param);
   },
 
   /**
    * 点赞评论
    * @param {*} 评论id
-   * @returns {Promise<AxiosResponse<any>>}
+   * @returns {Promise<AxiosResponse<any>>} 点赞状态 true表示已点赞，false表示已取消点赞
    */
   likeComment(commentId) {
     return request.get(path.commentLike, { params: { commentId } });
@@ -154,6 +163,15 @@ const api = {
    */
   getWebsiteStats() {
     return request.get(path.websiteStats);
+  },
+
+  /**
+   * 查询评论审核状态
+   * @param {string} commentId - 评论ID
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  getCommentAuditStatus(commentId) {
+    return request.get(path.commentAuditStatus, { params: { commentId } });
   },
 };
 
