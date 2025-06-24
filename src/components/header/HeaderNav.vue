@@ -11,7 +11,7 @@
     <!--   导航菜单   -->
     <div class="menus">
       <!--  搜索按钮  -->
-      <div class="search-button">
+      <div class="search-button" @click="handleSearch">
         <i class="iconfont icon-sousuoxiao"></i>
         <span>搜索</span>
       </div>
@@ -81,15 +81,21 @@
           inactive-icon="Moon"
       />
     </div>
+
+    <!-- 搜索组件 -->
+    <ArticleSearch ref="searchRef" />
   </nav>
 </template>
 
 <script>
-
 import {useDark} from "@vueuse/core";
+import ArticleSearch from '../../utils/ArticleSearch/ArticleSearch.vue'
 
 export default {
   name: "web_nav",
+  components: {
+    ArticleSearch
+  },
   data() {
     const isDark = useDark()
     return {
@@ -121,6 +127,10 @@ export default {
       this.lastScrollTop = scrollTop; // 更新上一次滚动距离
       // 更新是否在顶部的状态
       this.isTop = scrollTop <= 0
+    },
+
+    handleSearch() {
+      this.$refs.searchRef.openSearchDialog()
     }
   },
 
@@ -183,6 +193,23 @@ span, i {
 
 .search-button {
   display: inline-block;
+  cursor: pointer;
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #3399ff;
+    transition: width 0.3s ease;
+  }
+
+  &:hover::after {
+    width: 100%;
+  }
 }
 
 .menus_items {
@@ -192,9 +219,30 @@ span, i {
     position: relative;
     display: inline-block;
     padding: 0 0 0 14px;
+    cursor: pointer;
+
+    a {
+      position: relative;
+      text-decoration: none;
+      color: inherit;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: #3399ff;
+        transition: width 0.3s ease;
+      }
+
+      &:hover::after {
+        width: 100%;
+      }
+    }
   }
 }
-
 
 .iconfont {
   vertical-align: middle;

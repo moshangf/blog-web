@@ -40,6 +40,15 @@ const base = {
   // 点赞评论接口
   commentLike: baseUrl + "/comment/like",
 
+  // 点赞文章接口
+  articleLike: baseUrl + "/articles/like",
+
+  // 检查文章点赞状态接口
+  checkArticleLikeStatus: baseUrl + "/articles/checkLikeStatus",
+
+  // 更新文章浏览量接口
+  updateArticleView: baseUrl + "/articles/view",
+
   // 访客记录接口
   recordVisitor: baseUrl + "/visitor/record",
 
@@ -57,6 +66,9 @@ const base = {
 
   // 查询评论审核状态接口
   commentAuditStatus: baseUrl + "/comment/auditStatus",
+
+  // 搜索文章接口
+  searchArticles: baseUrl + "/articles/search",
 };
 
 export default base;

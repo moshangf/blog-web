@@ -116,6 +116,33 @@ const api = {
   },
 
   /**
+   * 点赞文章
+   * @param {*} articleId 文章id
+   * @returns {Promise<AxiosResponse<any>>} 点赞状态 true表示已点赞，false表示已取消点赞
+   */
+  likeArticle(articleId) {
+    return request.get(path.articleLike, { params: { articleId } });
+  },
+
+  /**
+   * 检查文章点赞状态
+   * @param {*} articleId 文章id
+   * @returns {Promise<AxiosResponse<any>>} 点赞状态 true表示已点赞，false表示已取消点赞
+   */
+  checkArticleLikeStatus(articleId) {
+    return request.get(path.checkArticleLikeStatus, { params: { articleId } });
+  },
+
+  /**
+   * 更新文章浏览量
+   * @param {*} articleId 文章id
+   * @returns {Promise<AxiosResponse<any>>}
+   */
+  updateArticleView(articleId) {
+    return request.get(path.updateArticleView, { params: { articleId } });
+  },
+
+  /**
    * 记录访客信息
    * @param {string} visitorId - 访客唯一标识
    * @returns {Promise<AxiosResponse<any>>}
@@ -166,12 +193,12 @@ const api = {
   },
 
   /**
-   * 查询评论审核状态
-   * @param {string} commentId - 评论ID
+   * 搜索文章
+   * @param {Object} params 搜索参数
    * @returns {Promise<AxiosResponse<any>>}
    */
-  getCommentAuditStatus(commentId) {
-    return request.get(path.commentAuditStatus, { params: { commentId } });
+  searchArticles(params) {
+    return request.get(path.searchArticles, { params });
   },
 };
 

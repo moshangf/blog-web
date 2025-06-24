@@ -17,7 +17,6 @@
       </u-comment>
     </u-comment-scroll>
 
-
   </div>
 </template>
 
@@ -39,6 +38,8 @@ const router = useRouter();
 const content = ref();
 const article = inject('article') //向父组件传递文章信息
 const articleId = router.currentRoute.value.params.id;
+const isLiked = ref(false);
+const likesCount = ref(0);
 
 const config = reactive({
   user: {
@@ -202,7 +203,7 @@ const submit = async ({ content, parentId, finish }) => {
 }
 
 /**
- * 点赞事件
+ * 评论点赞
  * @param id 评论id
  * @param finish 回调函数
  */
@@ -314,53 +315,22 @@ const more = async () => {
 }
 
 /**
- * 获取文章详情
+ * 更新文章浏览量
  */
-const fetchArticleInfo = async () => {
+const updateArticleView = async () => {
   try {
-    const res = await api.getArticleInfo(articleId)
-    if (res.data.code === 20000) {
-      content.value = res.data.data.content
-      article.value = {
-        title: res.data.data.title,
-        createTime: res.data.data.createTime,
-        pageView: res.data.data.pageView,
-        likesCount: res.data.data.likesCount,
-        content: res.data.data.content,
-        cover: res.data.data.cover,
-        id: res.data.data.id
-      }
-
-      // 等待 DOM 更新完成后处理目录和图片
-      nextTick(() => {
-        // 初始化目录
-        window.dispatchEvent(new CustomEvent('article-content-updated'))
-        // 初始化图片预览
-        const articleContent = document.querySelector('.article-content')
-        if (articleContent) {
-          const images = articleContent.querySelectorAll('img')
-          imageUrls.value = Array.from(images).map(img => img.src)
-
-          images.forEach((img, index) => {
-            img.style.cursor = 'zoom-in'
-            img.addEventListener('click', () => {
-              previewImage(index)
-            })
-          })
-        }
-      })
-    }
+    await api.updateArticleView(articleId);
+    // 浏览量更新通常不需要向用户显示结果
   } catch (error) {
-    ElMessage.error('获取文章详情失败')
+    console.error('更新浏览量失败:', error);
   }
-}
+};
 
 /**
  * 获取回复列表
  * @param param0 
  */
 const replyPage = async ({ parentId, current, size, finish }) => {
-  console.log("获取评论回复" + parentId + current + size + articleId)
   try {
     const res = await api.getReplyPage({ parentId, current, size, articleId: articleId })
     if (res.data.code === 20000) {
@@ -398,21 +368,153 @@ const initCodeCopy = () => {
   }, 100)
 }
 
+/**
+ * 获取文章详情
+ */
+const fetchArticleInfo = async () => {
+  try {
+    const res = await api.getArticleInfo(articleId)
+    if (res.data.code === 20000) {
+      content.value = res.data.data.content
+      likesCount.value = res.data.data.likesCount || 0;
+      article.value = {
+        title: res.data.data.title,
+        createTime: res.data.data.createTime,
+        pageView: res.data.data.pageView,
+        likesCount: res.data.data.likesCount,
+        content: res.data.data.content,
+        cover: res.data.data.cover,
+        id: res.data.data.id,
+        updateTime: res.data.data.updateTime,
+        textCount: res.data.data.textCount  
+      }
+
+      // 检查用户是否已点赞该文章
+      checkArticleLikeStatus();
+
+      // 等待 DOM 更新完成后处理目录和图片
+      nextTick(() => {
+        // 初始化目录
+        window.dispatchEvent(new CustomEvent('article-content-updated'))
+        // 初始化图片预览
+        const articleContent = document.querySelector('.article-content')
+        if (articleContent) {
+          const images = articleContent.querySelectorAll('img')
+          imageUrls.value = Array.from(images).map(img => img.src)
+
+          images.forEach((img, index) => {
+            img.style.cursor = 'zoom-in'
+            img.addEventListener('click', () => {
+              previewImage(index)
+            })
+          })
+        }
+      })
+    }
+  } catch (error) {
+    ElMessage.error('获取文章详情失败')
+  }
+}
+
+/**
+ * 点赞文章
+ */
+const handleLikeArticle = async () => {
+  // 检查用户是否登录
+  if (!config.user || !config.user.id) {
+    UToast({ message: '请先登录后再点赞!', type: 'warning' });
+    // 触发快捷登录组件显示，并传递登录成功后要执行的点赞操作
+    window.dispatchEvent(new CustomEvent('show-quick-login', {
+      detail: {
+        action: () => {
+          // 登录成功后重新获取用户信息并自动点赞
+          fetchUserInfo().then(() => {
+            handleLikeArticle();
+          });
+        }
+      }
+    }));
+    return;
+  }
+  
+  try {
+    const res = await api.likeArticle(articleId);
+    if (res.data.code === 20000) {
+      const likeStatus = res.data.data;
+      isLiked.value = likeStatus;
+      
+      // 更新本地存储中的点赞状态
+      const likedArticles = localStorage.getItem('likedArticles') || '';
+      const likedArticleIds = likedArticles ? likedArticles.split(',') : [];
+      
+      if (likeStatus) {
+        // 点赞成功
+        if (!likedArticleIds.includes(articleId.toString())) {
+          likedArticleIds.push(articleId.toString());
+        }
+        likesCount.value++;
+        UToast({ message: '点赞成功!', type: 'success' });
+      } else {
+        // 取消点赞
+        const index = likedArticleIds.indexOf(articleId.toString());
+        if (index > -1) {
+          likedArticleIds.splice(index, 1);
+        }
+        likesCount.value = Math.max(0, likesCount.value - 1);
+        UToast({ message: '已取消点赞!', type: 'info' });
+      }
+      
+      // 保存更新后的点赞列表到本地存储
+      localStorage.setItem('likedArticles', likedArticleIds.join(','));
+      
+      // 更新父组件中的文章信息
+      if (article.value) {
+        article.value.likesCount = likesCount.value;
+      }
+      
+      // 触发自定义事件，通知侧边栏更新点赞状态
+      window.dispatchEvent(new CustomEvent('article-like-updated', { 
+        detail: { isLiked: isLiked.value, likesCount: likesCount.value }
+      }));
+    } else {
+      UToast({ message: res.data.message || '操作失败', type: 'error' });
+    }
+  } catch (error) {
+    console.error('点赞操作失败:', error);
+    UToast({ message: '点赞操作失败!', type: 'error' });
+  }
+};
+
+/**
+ * 检查用户是否已点赞文章
+ */
+const checkArticleLikeStatus = () => {
+  // 如果用户已登录，检查是否已点赞
+  if (config.user && config.user.id) {
+    // 从本地存储获取已点赞文章列表
+    const likedArticles = localStorage.getItem('likedArticles');
+    if (likedArticles) {
+      const likedArticleIds = likedArticles.split(',');
+      isLiked.value = likedArticleIds.includes(articleId.toString());
+    } else {
+      // 如果本地存储中没有，则默认为未点赞
+      isLiked.value = false;
+    }
+  } else {
+    // 未登录用户不能点赞
+    isLiked.value = false;
+  }
+};
 
 onMounted(async () => {
   window.previewImage = previewImage;
 
-  // 测试 emoji 资源加载
-  console.log('Emoji 资源加载测试：', {
-    emojiList: emoji.emojiList,
-    faceList: emoji.faceList,
-    allEmoji: emoji.allEmoji,
-    contentEmoji
-  });
-
   try {
     // 先获取文章详情
     await fetchArticleInfo()
+
+    // 更新文章浏览量
+    await updateArticleView()
 
     // 再并行执行其他请求
     await Promise.allSettled([

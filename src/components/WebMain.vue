@@ -5,9 +5,6 @@
 
     <!--  侧边栏  -->
     <MainAside/>
-
-    <!--  回到顶部  -->
-    <el-backtop :right="50" :bottom="50"/>
   </main>
 </template>
 

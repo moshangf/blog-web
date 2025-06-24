@@ -7,14 +7,14 @@
             </div>
             <div class="quick-login-body">
                 <div class="form-group">
-                    <label>用户名</label>
-                    <input v-model="form.username" type="text" placeholder="给自己起一个名字"
+                    <label>昵称</label>
+                    <input v-model="form.username" type="text" placeholder="给自己起一个昵称（首次登录需要）"
                         :class="{ 'error': errors.username }">
                     <span v-if="errors.username" class="error-text">{{ errors.username }}</span>
                 </div>
                 <div class="form-group">
-                    <label>邮&nbsp;&nbsp;&nbsp;&nbsp;箱</label>
-                    <input v-model="form.email" type="email" placeholder="留下你的邮箱" :class="{ 'error': errors.email }">
+                    <label>邮箱</label>
+                    <input v-model="form.email" type="email" placeholder="请输入邮箱" :class="{ 'error': errors.email }">
                     <span v-if="errors.email" class="error-text">{{ errors.email }}</span>
                 </div>
                 <div class="form-group">
@@ -26,6 +26,9 @@
                 <button class="submit-btn" @click="handleSubmit" :disabled="loading">
                     {{ loading ? '登录中...' : '登录' }}
                 </button>
+                <div class="login-tip">
+                    首次登录将自动完成注册
+                </div>
             </div>
         </div>
     </div>
@@ -36,18 +39,18 @@ import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { useStore } from 'vuex'
 import api from '../../api'
 import { ElMessage } from 'element-plus'
-import axios from 'axios'
 
 const store = useStore()
 const emit = defineEmits(['success', 'cancel'])
 
 // 存储需要重试的请求配置
-let pendingRequest = null
 let captchaTimer = null // 验证码定时器
+let pendingAction = null // 存储登录成功后需要执行的操作
 
 const showDialog = ref(false) // 默认不显示
 const loading = ref(false)
 const captchaImg = ref(null) // 验证码图片
+const isLogin = ref(true) // 默认为登录模式
 
 const form = reactive({
     username: '',
@@ -69,12 +72,16 @@ const handleShowQuickLogin = (event) => {
         return
     }
     
-    showDialog.value = true
-    if (event.detail?.config) {
-        pendingRequest = event.detail.config
+    // 检查是否有自定义数据
+    if (event.detail && event.detail.action) {
+        pendingAction = event.detail.action
+    } else {
+        pendingAction = null
     }
-    // 显示弹窗时获取验证码
-    getCaptcha()
+    
+    showDialog.value = true
+    // 显示弹窗时立即获取验证码
+    getCaptcha(true)
     // 启动定时器
     startCaptchaTimer()
 }
@@ -85,13 +92,11 @@ const validateForm = () => {
     errors.email = ''
     errors.captcha = ''
 
-    if (!form.username) {
-        errors.username = '请输入用户名'
-        isValid = false
-    }
-
     if (!form.email) {
         errors.email = '请输入邮箱'
+        isValid = false
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+        errors.email = '请输入正确的邮箱格式'
         isValid = false
     }
 
@@ -121,7 +126,7 @@ const closeDialog = () => {
 
 // 获取验证码
 let captchaTimeout = null
-const getCaptcha = async () => {
+const getCaptcha = async (immediate = false) => {
     // 如果已经有请求在进行中，就取消之前的请求
     if (captchaTimeout) {
         clearTimeout(captchaTimeout)
@@ -132,7 +137,7 @@ const getCaptcha = async () => {
         return
     }
 
-    captchaTimeout = setTimeout(async () => {
+    const fetchCaptcha = async () => {
         try {
             const res = await api.getCaptcha()
             if (res.data.code === 20000) {
@@ -144,7 +149,15 @@ const getCaptcha = async () => {
             console.error('获取验证码失败:', error)
             ElMessage.error('获取验证码失败，请重试')
         }
-    }, 500) // 500ms 的防抖延迟
+    }
+
+    if (immediate) {
+        // 立即执行
+        await fetchCaptcha()
+    } else {
+        // 防抖延迟执行
+        captchaTimeout = setTimeout(fetchCaptcha, 500)
+    }
 }
 
 // 启动定时器
@@ -172,6 +185,19 @@ const clearCaptchaTimer = () => {
     }
 }
 
+const toggleMode = () => {
+    isLogin.value = !isLogin.value
+    // 切换模式时重置表单和错误信息
+    form.username = ''
+    form.email = ''
+    form.captcha = ''
+    errors.username = ''
+    errors.email = ''
+    errors.captcha = ''
+    // 重新获取验证码
+    getCaptcha(true)
+}
+
 /**
  * 提交登录表单
  * @returns {Promise<void>}
@@ -182,32 +208,33 @@ const handleSubmit = async () => {
     }
     loading.value = true
     try {
-        const res = await api.login(form);
+        const res = await api.login({
+            username: form.username,
+            email: form.email,
+            captcha: form.captcha,
+            uuid: form.uuid
+        })
+
         if (res.data.code === 20000) {
-            const userInfo = res.data.data;
-            store.commit("setUserInfo", userInfo);
+            const userInfo = res.data.data
+            store.commit("setUserInfo", userInfo)
             ElMessage.success('登录成功')
-
-            // 如果有待处理的请求，使用新token重试
-            // if (pendingRequest) {
-            //     const config = pendingRequest
-            //     config.headers.Authorization = store.state.accessToken
-            //     try {
-            //         await axios(config)
-            //     } catch (error) {
-            //         console.error('重试请求失败:', error)
-            //     }
-            //     pendingRequest = null
-            // }
-
             showDialog.value = false
             emit('success')
+            
+            // 执行登录后的待处理操作
+            if (pendingAction) {
+                setTimeout(() => {
+                    pendingAction()
+                    pendingAction = null
+                }, 500)
+            }
         } else {
             ElMessage.error(res.data.message || '登录失败，请检查输入信息')
         }
     } catch (error) {
-        console.error("登录失败:", error);
-        return false;
+        console.error("登录失败:", error)
+        return false
     } finally {
         loading.value = false
     }
@@ -295,13 +322,12 @@ onUnmounted(() => {
 }
 
 .form-group label {
+    min-width: 45px;
     color: #333;
     font-size: 14px;
     font-weight: 600;
     text-align: right;
-    /* 文字右对齐 */
     flex-shrink: 0;
-    /* 防止label被压缩 */
 }
 
 .form-group input {
@@ -370,5 +396,29 @@ onUnmounted(() => {
 .submit-btn:disabled {
     background: #a0a0a0;
     cursor: not-allowed;
+}
+
+.switch-mode {
+    text-align: center;
+    margin-top: 16px;
+    color: #4a5a6b;
+    font-size: 14px;
+}
+
+.switch-mode span {
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.switch-mode span:hover {
+    color: #3d4b59;
+    text-decoration: underline;
+}
+
+.login-tip {
+    text-align: center;
+    margin-top: 16px;
+    color: #666;
+    font-size: 14px;
 }
 </style>

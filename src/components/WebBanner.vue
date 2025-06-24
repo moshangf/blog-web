@@ -4,10 +4,22 @@
     <div class="page_title">
       <div class="article_title" v-if="isArticlePage">
         <h1>{{ propData?.title }}</h1>
-        <p class="article_info">
-          <span>发布时间: {{ propData?.createTime ? dayjs(propData.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
-          <span>浏览量: {{ propData?.pageView || 0 }}</span>
-          <span>点赞数: {{ propData?.likesCount || 0 }}</span>
+        <p class="article_info time-info">
+          <i class="iconfont icon-chuangjianshijian"></i>
+          <span>发布于 {{ propData?.createTime ? dayjs(propData.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
+          <span class="separator">|</span>
+          <i class="iconfont icon-gengxinshijian"></i>
+          <span>更新于 {{ propData?.updateTime ? dayjs(propData.updateTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
+        </p>
+        <p class="article_info count-info">
+          <i class="iconfont icon-zishu"></i>
+          <span>字数 {{ propData?.textCount || 0 }}</span>
+          <span class="separator">|</span>
+          <i class="iconfont icon-liulanliang"></i>
+          <span>浏览量 {{ propData?.pageView || 0 }}</span>
+          <span class="separator">|</span>
+          <i class="iconfont icon-_dianzanliang"></i>
+          <span>点赞数 {{ propData?.likesCount || 0 }}</span>
         </p>
       </div>
       <h1 class="title" v-else>{{ routeTitle }}</h1>
@@ -29,8 +41,10 @@ const props = defineProps({
       cover: '',
       title: '',
       createTime: '',
+      updateTime: '',
       pageView: 0,
-      likesCount: 0
+      likesCount: 0,
+      textCount: 0
     })
   },
   bannerData: {
@@ -46,7 +60,6 @@ const props = defineProps({
 const router = useRouter();
 const routeTitle = ref(router.currentRoute.value.meta.title)
 const isArticlePage = computed(() => {
-  console.log('meta名称:', routeTitle.value)
   return routeTitle.value === "文章详情"
 })
 
@@ -78,53 +91,43 @@ watchEffect(() => {
   margin-bottom: 30px;
 
   h1 {
-    font-size: 2em;
+    font-size: 2.2em;
     margin-bottom: 15px;
     font-weight: 600;
     line-height: 1.4;
-    // 渐变色效果
-    background-image: linear-gradient(to right,
-        #8b0000,
-        #d2691e,
-        #daa520,
-        #228b22);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: rainbow 6s linear infinite;
-  }
-
-  // 添加动画效果
-  @keyframes rainbow {
-    0% {
-      background-position: 0% 50%;
-    }
-
-    100% {
-      background-position: 400% 50%;
-    }
+    color: #f5f5f5; // 乳白色
   }
 
   .article_info {
-    color: #000000;
-    font-size: 14px;
+    font-size: 15px;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     span {
-      margin-right: 20px;
-      background-image: linear-gradient(to right,
-          #8b0000,
-          #d2691e,
-          #daa520,
-          #228b22);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      animation: rainbow 6s linear infinite;
-
-      &:last-child {
-        margin-right: 0;
-      }
+      margin-right: 0;
+      color: #f5f5f5; // 乳白色
+      display: inline-flex;
+      align-items: center;
     }
+
+    .separator {
+      margin: 0 10px;
+    }
+    
+    .iconfont {
+      color: #f5f5f5;
+      margin-right: 5px;
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+    }
+  }
+
+  .count-info {
+    margin-bottom: 0;
+    font-size: 15px;
   }
 }
 
@@ -181,7 +184,8 @@ watchEffect(() => {
     position: relative;
     z-index: 2; // 确保标题在遮罩层上方
     .title {
-      color: white;
+      color: #f5f5f5; // 乳白色
+      font-size: 2.2em;
     }
   }
 }
