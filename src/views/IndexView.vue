@@ -15,6 +15,9 @@
 
     <!--  页脚  -->
     <WebFooter/>
+
+    <!--  侧边工具栏  -->
+    <SideToolbar/>
   </div>
 </template>
 
@@ -25,11 +28,24 @@ import {provide, ref, computed} from "vue";
 import WebHeader from "../components/WebHeader";
 import HeaderNav from "../components/header/HeaderNav";
 import WebBanner from "../components/WebBanner";
+import SideToolbar from "../components/SideToolbar.vue";
 import { bannerConfig } from '../assets/js/bannerConfig';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
-const article = ref({})  // 修改为对象的初始值
+// 修改为包含所有必要属性的响应式对象
+const article = ref({
+  title: '',
+  createTime: '',
+  updateTime: '',
+  pageView: 0,
+  likesCount: 0,
+  content: '',
+  cover: '',
+  id: '',
+  textCount: 0
+})
+
 provide('article', article) //接收子组件参数
 
 // 根据当前路由获取对应的banner数据
