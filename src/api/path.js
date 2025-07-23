@@ -1,7 +1,5 @@
 // 后端服务器接口
-const baseUrl = "http://localhost:9090/web/public";
-// 公网域名
-// const baseUrl = "https://你的域名/web/public";
+const baseUrl = process.env.VUE_APP_BASE_URL;
 
 const base = {
   // 登录接口

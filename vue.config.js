@@ -14,7 +14,10 @@ module.exports = defineConfig({
         resolvers: [UndrawUiResolver],
       }),
       new webpack.DefinePlugin({
-        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
+        'process.env': {
+          ...require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` }).parsed
+        }
       })
     ],
     resolve: {

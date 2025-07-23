@@ -29,3 +29,11 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component);
 }
 app.use(store).use(router).mount("#app");
+
+// 生产环境禁用 console.log
+if (process.env.NODE_ENV === 'production') {
+  console.log = () => {}
+  console.debug = () => {}
+  console.info = () => {}
+  // 保留 console.warn 和 console.error
+}
