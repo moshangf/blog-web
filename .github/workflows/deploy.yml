@@ -31,5 +31,5 @@ jobs:
           port: 312
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: "dist/*"
-          target: "/www/dk_project/vue/web/"
+          target: "/www/dk_project/vue/web/dist/"
           strip_components: 1
