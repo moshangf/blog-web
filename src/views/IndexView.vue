@@ -22,8 +22,13 @@
         <span class="site-name">山鬼说</span>
         <span>域名：mhblog.com.cn</span>
         <span>备案时间：2026-05-23 23:48:48</span>
-        <span>工信部备案号：京ICP备2026027344号</span>
-        <span>公安备案号：—</span>
+        <span>工信部备案号：<a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备2026027344号</a></span>
+        <span class="beian_gongan">
+          <a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=11010602202859" target="_blank" rel="noopener noreferrer">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAbwAAAG8B8aLcQwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEZSURBVDiNpZM9TsNAEIXfzBekcUCi4QJcIhUNAhUFRQIHoKDhCFyAgoKSgkMkSlp+JKJNQcUVKOkouQKVK0T8JLFjJ3ZowkiestqZb9+b2V0C/OdJ6T1VOecGAG4BzNXa78vlchAT3wGoByEEVWtdltWNJEmKiPiqtd5LKQ+Z2RPRnohqiqhSSk1E1JRSj1rrw0R/wMwPzLyplFoSkY/orPeeiGZEtN1utx8AuOj3+wcA8NPpdO6Z+bVWqx0S0bLX692Uy+Wzdrv92Gg0bgE0m81mtV6v36SUH0qpN0R0TUQHAQBJ0zQH8CYiDwBmAO5ijJNSqfQJYN9auw9gYow5K5fL31rrVylly8wXwQeY+YWZPYD3XwMAnCRJcnxW/AKT0j+BRWH0GQAAAABJRU5ErkJggg==" alt="公安备案图标" class="gongan_icon"/>
+            京公网安备11010602202859号
+          </a>
+        </span>
         <span class="status">网站状态：—</span>
       </div>
     </div>
@@ -127,6 +132,8 @@ export default {
   gap: 12px;
   align-items: center;
   flex-wrap: wrap;
+  justify-content: center;
+  padding: 0 12px;
 }
 .beian_inner .site-name {
   font-weight: 600;
@@ -134,6 +141,67 @@ export default {
 }
 .beian_inner .status {
   color: #999;
+}
+
+/* 工信部备案链接 */
+.beian_inner a {
+  color: #666;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.beian_inner a:hover {
+  color: #3399ff;
+}
+
+/* 公安备案信息样式 */
+.beian_gongan {
+  display: inline-flex;
+  align-items: center;
+}
+.beian_gongan a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #666;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.beian_gongan a:hover {
+  color: #3399ff;
+}
+.gongan_icon {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* 移动端备案信息 */
+@media screen and (max-width: 768px) {
+  .beian_inner {
+    gap: 6px;
+    font-size: 11px;
+    flex-direction: column;
+    padding: 0 16px;
+  }
+  .gongan_icon {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .beian_bar {
+    padding: 6px 0;
+  }
+  .beian_inner {
+    font-size: 10px;
+    gap: 4px;
+  }
+  .gongan_icon {
+    width: 11px;
+    height: 11px;
+  }
 }
 
 </style>

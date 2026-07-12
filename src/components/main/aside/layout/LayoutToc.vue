@@ -261,4 +261,34 @@ onUnmounted(() => {
     font-size: 0.75em;
   }
 }
+
+/* 移动端目录 */
+@media screen and (max-width: 768px) {
+  .toc {
+    .toc-content {
+      max-height: 50vh;
+    }
+
+    .toc-item {
+      font-size: 0.85em;
+      padding: 3px 0;
+    }
+
+    .toc-level-1 {
+      padding-left: 1em;
+    }
+    .toc-level-2 {
+      padding-left: 2em;
+    }
+    .toc-level-3 {
+      padding-left: 3em;
+    }
+    .toc-level-4 {
+      padding-left: 4em;
+    }
+    .toc-level-5 {
+      padding-left: 5em;
+    }
+  }
+}
 </style>

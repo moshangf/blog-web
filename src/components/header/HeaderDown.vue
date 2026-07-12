@@ -60,4 +60,15 @@ export default {
     }
   }
 }
+
+/* 移动端下翻按钮 */
+@media screen and (max-width: 768px) {
+  .scroll_down {
+    bottom: 1.5rem;
+    
+    #page {
+      font-size: 24px !important;
+    }
+  }
+}
 </style>

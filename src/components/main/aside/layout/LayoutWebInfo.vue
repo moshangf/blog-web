@@ -108,4 +108,12 @@ export default {
     line-height: 2;
   }
 }
+
+/* 移动端网站信息 */
+@media screen and (max-width: 768px) {
+  .web_info_item {
+    padding: 0 4px;
+    font-size: 0.9em;
+  }
+}
 </style>

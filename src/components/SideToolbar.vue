@@ -444,4 +444,47 @@ watchEffect(() => {
     }
   }
 }
+
+/* 移动端工具栏适配 */
+@media screen and (max-width: 768px) {
+  .side-toolbar {
+    right: 12px;
+    bottom: 80px;
+    gap: 8px;
+
+    .toolbar-item {
+      width: 34px;
+      height: 34px;
+
+      .iconfont {
+        font-size: 16px;
+      }
+
+      .like-count {
+        font-size: 10px;
+        min-width: 16px;
+        height: 16px;
+        top: -4px;
+        right: -4px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .side-toolbar {
+    right: 8px;
+    bottom: 70px;
+    gap: 6px;
+
+    .toolbar-item {
+      width: 30px;
+      height: 30px;
+
+      .iconfont {
+        font-size: 14px;
+      }
+    }
+  }
+}
 </style>

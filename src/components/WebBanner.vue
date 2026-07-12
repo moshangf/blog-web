@@ -189,4 +189,80 @@ watchEffect(() => {
     }
   }
 }
+
+/* 移动端Banner适配 */
+@media screen and (max-width: 768px) {
+  #web_other_header {
+    height: 260px;
+    padding: 0 16px;
+
+    .page_title {
+      width: 100%;
+      max-width: 100%;
+      padding: 0 12px;
+      box-sizing: border-box;
+
+      .title {
+        font-size: 1.6em;
+        word-break: break-word;
+        text-align: center;
+      }
+    }
+  }
+
+  .article_title {
+    margin-bottom: 20px;
+    width: 100%;
+
+    h1 {
+      font-size: 1.5em;
+      margin-bottom: 12px;
+      padding: 0 12px;
+      word-break: break-word;
+    }
+
+    .article_info {
+      flex-wrap: wrap;
+      font-size: 13px;
+      padding: 0 12px;
+
+      .time-info,
+      .count-info {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px;
+      }
+
+      .separator {
+        margin: 0 6px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  #web_other_header {
+    height: 220px;
+    padding: 0 12px;
+
+    .page_title {
+      padding: 0 8px;
+
+      .title {
+        font-size: 1.3em;
+      }
+    }
+  }
+
+  .article_title {
+    h1 {
+      font-size: 1.2em;
+    }
+
+    .article_info {
+      font-size: 11px;
+    }
+  }
+}
 </style>

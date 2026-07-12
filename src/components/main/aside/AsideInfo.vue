@@ -165,4 +165,27 @@ export default {
   }
 
 }
+
+/* 移动端个人信息卡片 */
+@media screen and (max-width: 768px) {
+  .card {
+    padding: 16px;
+
+    .canter {
+      .name {
+        font-size: 1.2em;
+      }
+
+      .description {
+        font-size: 0.9em;
+      }
+    }
+
+    .icons {
+      .social-icon {
+        font-size: 1.3em;
+      }
+    }
+  }
+}
 </style>

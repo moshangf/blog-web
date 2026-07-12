@@ -76,6 +76,8 @@ export default {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 700px;
   
   .poetry {
     display: flex;
@@ -86,12 +88,46 @@ export default {
       font-size: 1.72em;
       color: white;
       margin-bottom: 10px;
+      text-align: center;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
     
     .author {
       font-size: 1.2em;
       color: white;
       align-self: flex-end;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
+/* 移动端 */
+@media screen and (max-width: 768px) {
+  .site_info {
+    width: 85%;
+    
+    .poetry {
+      .content {
+        font-size: 1.2em;
+      }
+      .author {
+        font-size: 0.95em;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .site_info {
+    width: 90%;
+    
+    .poetry {
+      .content {
+        font-size: 1em;
+      }
+      .author {
+        font-size: 0.85em;
+      }
     }
   }
 }

@@ -20,4 +20,11 @@ const route = useRoute();
   flex-direction: column;
   min-height: 100%;
 }
+
+/* 移动端：内容区全宽 */
+@media screen and (max-width: 768px) {
+  .content {
+    width: 100%;
+  }
+}
 </style>

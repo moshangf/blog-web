@@ -163,4 +163,54 @@ const toArticle = (val) => {
   margin: 30px 0;
   margin-top: auto;
 }
+
+/* 移动端文章列表 */
+@media screen and (max-width: 768px) {
+  .list_item {
+    flex-direction: column;
+    height: auto;
+
+    .cover {
+      width: 100%;
+      height: 200px;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .info {
+      width: 100%;
+      padding: 16px 20px;
+
+      .title {
+        font-size: 1.1em;
+      }
+
+      .subhead {
+        line-height: 1.8;
+        font-size: 0.85em;
+      }
+
+      .intro {
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        margin-top: 8px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .list_item {
+    .cover {
+      height: 180px;
+    }
+
+    .info {
+      padding: 12px 16px;
+
+      .title {
+        font-size: 1em;
+      }
+    }
+  }
+}
 </style>

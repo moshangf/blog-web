@@ -50,4 +50,20 @@ const header = ref(null);
     }
   }
 }
+
+/* 移动端首屏适配 */
+@media screen and (max-width: 768px) {
+  .web_header {
+    height: 60vh;
+    min-height: 400px;
+    background-position: center center;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .web_header {
+    height: 50vh;
+    min-height: 350px;
+  }
+}
 </style>
