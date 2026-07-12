@@ -19,6 +19,8 @@ import "./assets/css/iconfont.css";
 import "undraw-ui/es/index.css";
 import "undraw-ui/es/components/comment/comment.css";
 import "undraw-ui/es/components/comment-scroll/comment-scroll.css";
+import "undraw-ui/es/components/editor/editor.css";
+import "undraw-ui/es/components/emoji/emoji.css";
 import "undraw-ui/es/components/toast/toast.css";
 import "undraw-ui/es/components/icon/icon.css";
 
