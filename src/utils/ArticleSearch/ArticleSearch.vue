@@ -285,4 +285,43 @@ defineExpose({
     transform: translateY(0);
   }
 }
-</style> 
+
+/* 移动端搜索弹窗 */
+@media screen and (max-width: 768px) {
+  :deep(.search-dialog) {
+    width: 90% !important;
+    max-width: 90% !important;
+    margin: 30px auto !important;
+    border-radius: 12px;
+  }
+
+  .search-container {
+    padding: 0;
+
+    .search-input {
+      :deep(.el-input__inner) {
+        height: 38px;
+        font-size: 14px;
+      }
+    }
+
+    .search-results {
+      max-height: 50vh;
+
+      .search-item {
+        padding: 12px 8px;
+
+        .article-info {
+          h3 {
+            font-size: 14px;
+          }
+
+          p {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+}
+</style>

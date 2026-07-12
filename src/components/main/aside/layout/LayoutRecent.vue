@@ -120,4 +120,25 @@ const toArticle = (val) => {
   display: unset;
 }
 
+/* 移动端最近文章 */
+@media screen and (max-width: 768px) {
+  .aside_list {
+    .aside_list_item {
+      .thumbnail {
+        width: 3.6em;
+        height: 3.6em;
+      }
+
+      .content {
+        .content_span {
+          font-size: 0.85em;
+        }
+
+        time {
+          font-size: 0.75em;
+        }
+      }
+    }
+  }
+}
 </style>

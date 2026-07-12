@@ -49,4 +49,33 @@ export default {
   padding: 20px 0;
   text-align: center;
 }
+
+/* 移动端分页 */
+@media screen and (max-width: 768px) {
+  :deep(.el-pagination) {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+
+    .el-pagination__total,
+    .el-pagination__jump {
+      font-size: 12px;
+    }
+    
+    .btn-prev, .btn-next, .el-pager li {
+      min-width: 28px;
+      height: 28px;
+      font-size: 12px;
+      line-height: 28px;
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  :deep(.el-pagination) {
+    .el-pagination__sizes {
+      display: none !important;
+    }
+  }
+}
 </style>

@@ -421,4 +421,56 @@ onUnmounted(() => {
     color: #666;
     font-size: 14px;
 }
+
+/* 移动端快速登录 */
+@media screen and (max-width: 768px) {
+    .quick-login-card {
+        padding: 24px 20px;
+        width: 92%;
+        border-radius: 12px;
+    }
+
+    .quick-login-header h3 {
+        font-size: 20px;
+    }
+
+    .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .form-group label {
+        min-width: auto;
+        text-align: left;
+        font-size: 13px;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+
+    .error-text {
+        left: 0;
+        bottom: -18px;
+    }
+
+    .captcha-img {
+        width: 100px;
+        height: 40px;
+    }
+
+    .submit-btn {
+        padding: 12px;
+        font-size: 15px;
+        margin-top: 16px;
+    }
+
+    .login-tip {
+        font-size: 12px;
+        margin-top: 12px;
+    }
+}
 </style>

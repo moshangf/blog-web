@@ -1,8 +1,6 @@
 <template>
   <!--  页脚  -->
-  <footer class="web_footer">
-    <div class="copyright"> ©2023-2025 By mh</div>
-  </footer>
+  <footer class="web_footer"></footer>
 </template>
 
 <script>
@@ -14,12 +12,21 @@ export default {
 <style scoped>
 .web_footer {
   position: relative;
-  padding: 40px 20px;
+  padding: 20px;
   text-align: center;
   background-color: rgba(0, 0, 0, 0.7);
 }
 
-.copyright {
-  color: white;
+/* 移动端页脚 */
+@media screen and (max-width: 768px) {
+  .web_footer {
+    padding: 14px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .web_footer {
+    padding: 10px;
+  }
 }
 </style>

@@ -554,6 +554,24 @@ onUnmounted(() => {
     background: rgba(255, 255, 255, 0.8);
   }
 }
+
+/* 移动端文章页：保持左右间距与其他页面一致 */
+@media screen and (max-width: 768px) {
+  .article {
+    padding: 24px 20px;
+
+    .article_hr {
+      margin: 24px auto;
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .article {
+    padding: 18px 14px;
+    border-radius: 8px;
+  }
+}
 </style>
 
 <style lang="scss">
@@ -742,6 +760,81 @@ onUnmounted(() => {
 
   .el-image-viewer__actions {
     opacity: 0.9;
+  }
+}
+
+/* 移动端文章内容适配 */
+@media screen and (max-width: 768px) {
+  .article-content {
+    font-size: 0.95em;
+    line-height: 1.7;
+
+    h1, h2, h3, h4, h5, h6 {
+      margin: 1.2em 0 0.5em;
+    }
+
+    h1 { font-size: 1.5em; }
+    h2 { font-size: 1.3em; }
+    h3 { font-size: 1.15em; }
+    h4 { font-size: 1.05em; }
+
+    p {
+      margin: 0.8em 0;
+      line-height: 1.7;
+    }
+
+    pre {
+      padding: 0.8em;
+      font-size: 0.85em;
+      border-radius: 6px;
+
+      .copy-btn {
+        opacity: 1;
+        top: 6px;
+        right: 6px;
+        padding: 3px 6px;
+        font-size: 11px;
+      }
+
+      code {
+        font-size: 0.85em;
+      }
+    }
+
+    img {
+      margin: 0.8em auto;
+    }
+
+    blockquote {
+      margin: 0.8em 0;
+      padding: 0.4em 0.8em;
+    }
+
+    table {
+      font-size: 0.85em;
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+
+      th, td {
+        padding: 0.4em 0.6em;
+        white-space: nowrap;
+      }
+    }
+
+    ul, ol {
+      padding-left: 1.5em;
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .article-content {
+    font-size: 0.9em;
+
+    h1 { font-size: 1.3em; }
+    h2 { font-size: 1.15em; }
+    h3 { font-size: 1.05em; }
   }
 }
 </style>

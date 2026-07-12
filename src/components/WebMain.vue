@@ -1,16 +1,22 @@
 <template>
-  <main class="web_main">
+  <main class="web_main" :class="{ 'article-page': isArticlePage }">
+    <!--  侧边栏（文章页移动端放在正文前） -->
+    <MainAside/>
+
     <!--  正文  -->
     <MainContent/>
-
-    <!--  侧边栏  -->
-    <MainAside/>
   </main>
 </template>
 
 <script setup>
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import MainContent from "./main/MainContent";
-import MainAside from "./main/MainAside";</script>
+import MainAside from "./main/MainAside";
+
+const route = useRoute()
+const isArticlePage = computed(() => route.name === 'articleInfo')
+</script>
 
 <style lang="scss" scoped>
 .web_main {
@@ -21,6 +27,11 @@ import MainAside from "./main/MainAside";</script>
   max-width: 1200px;
   width: 100%;
   animation: bottom-top 1s;
+
+  /* 桌面端：侧边栏在正文右侧 */
+  flex-direction: row;
+  .aside { order: 1; }
+  .content { order: 0; }
 
 
   @keyframes bottom-top {
@@ -39,5 +50,21 @@ import MainAside from "./main/MainAside";</script>
   }
 }
 
+/* 移动端：垂直布局 */
+@media screen and (max-width: 768px) {
+  .web_main {
+    flex-direction: column;
+    padding: 20px 12px;
 
+    .content { order: 0; }
+
+    /* 普通页面：侧边栏在正文下方 */
+    .aside { order: 1; }
+
+    /* 文章页：目录移到正文上方 */
+    &.article-page {
+      .aside { order: -1; }
+    }
+  }
+}
 </style>
