@@ -30,6 +30,7 @@ import { UToast } from "undraw-ui";
 import { useCopyCode } from '../../utils/useCopyCode.js'
 import { ElMessage, ElImageViewer } from 'element-plus'
 import Operate from '../../utils/CommentOperate/CommentOperate.vue'
+import { UComment, UCommentScroll } from 'undraw-ui'
 
 const commentRef = ref()
 const { copyCode } = useCopyCode()
@@ -570,6 +571,61 @@ onUnmounted(() => {
   .article {
     padding: 18px 14px;
     border-radius: 8px;
+  }
+}
+
+/* ===== 评论组件字体放大 2px ===== */
+/* 评论正文基础字体 */
+.u-comment .comment-main .content { font-size: 16px !important; line-height: 1.8 !important; }
+.comment-box .action-box .picture { font-size: 16px !important; }
+.comment-main .user-info .username .name { font-size: 17px !important; }
+.comment-main .user-info .time { font-size: 16px !important; }
+.action-box .item { font-size: 16px !important; }
+.u-comment .comment-form .header .header-title { font-size: 20px !important; }
+.comment-list-wrapper .title { font-size: 20px !important; }
+.reply-box .fetch-more { font-size: 14px !important; }
+
+/* ===== 评论移动端适配 ===== */
+@media screen and (max-width: 768px) {
+  .u-comment {
+    padding: 0 12px 16px !important;
+  }
+
+  .u-comment .comment-form .content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .u-comment .comment-form .content .el-avatar {
+    margin-right: 0;
+    margin-bottom: 10px;
+    align-self: center;
+  }
+
+  .comment-box .action-box {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .comment-main .user-info {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .comment-main .user-info .time {
+    margin-left: 0;
+  }
+
+  .comment-primary {
+    margin-left: 10px;
+  }
+
+  .u-comment .comment-list-wrapper {
+    padding: 24px 0 12px;
+  }
+
+  .reply .content-box {
+    margin-left: 8px;
   }
 }
 </style>

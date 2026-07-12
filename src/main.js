@@ -15,6 +15,12 @@ import "element-plus/theme-chalk/dark/css-vars.css";
 // 阿里图标样式
 import "./assets/js/iconfont";
 import "./assets/css/iconfont.css";
+// undraw-ui 样式
+import "undraw-ui/es/index.css";
+import "undraw-ui/es/components/comment/comment.css";
+import "undraw-ui/es/components/comment-scroll/comment-scroll.css";
+import "undraw-ui/es/components/toast/toast.css";
+import "undraw-ui/es/components/icon/icon.css";
 
 const app = createApp(App);
 
@@ -28,6 +34,11 @@ app.use(ElementPlus, {
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component);
 }
+
+// 注册 undraw-ui 插件（注册全局组件及基础功能）
+import UndrawUi from 'undraw-ui'
+app.use(UndrawUi)
+
 app.use(store).use(router).mount("#app");
 
 // 生产环境禁用 console.log
